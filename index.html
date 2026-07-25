@@ -62,7 +62,9 @@ button{cursor:pointer;border:none;outline:none;font-family:'DM Sans',sans-serif}
 
 /* ── NAVBAR ─────────────────────────────────────────────── */
 nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);width:min(94%,1200px);z-index:999;padding:10px 20px;display:flex;align-items:center;gap:12px;background:var(--surface2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:100px;transition:var(--trans);}
-.nav-logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.2rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;}
+.nav-logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.2rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;}
+.nav-logo img{height:34px;width:auto;max-width:180px;object-fit:contain;-webkit-text-fill-color:initial;display:block;}
+.footer-brand .nav-logo img{height:40px}
 .nav-links{display:flex;gap:4px;margin:0 auto}
 .nav-links a{padding:6px 13px;border-radius:99px;font-size:.85rem;font-weight:500;color:var(--muted);transition:var(--trans);}
 .nav-links a:hover{color:var(--text);background:var(--surface)}
@@ -108,6 +110,11 @@ nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);width:min(94%,12
   position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;
   transition:opacity 1s ease;
 }
+.hero-bg-video{
+  position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;
+  transition:opacity 1s ease;display:none;
+}
+.hero-bg-video.active{display:block;}
 .hero-bg-gradient{
   position:absolute;inset:0;z-index:1;
   background:linear-gradient(to bottom,
@@ -126,13 +133,26 @@ nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);width:min(94%,12
 }
 .hero-text-panel{
   display:flex;flex-direction:column;align-items:center;
-  background:rgba(10,10,18,.38);
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  background:rgba(10,10,18,.44);
+  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
   border-radius:28px;padding:36px 40px;
 }
 .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);padding:7px 18px;border-radius:99px;font-size:.78rem;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--accent2);margin-bottom:24px;backdrop-filter:blur(8px);}
 .hero-title{font-size:clamp(2.6rem,6vw,5rem);font-weight:800;line-height:1.06;margin-bottom:22px;}
 .hero-title span.hl{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-title .wiggle{display:inline-block;animation:heroWiggle 4s ease-in-out infinite;transform-origin:50% 50%;}
+.hero-title .wiggle.wiggle-delay{animation-delay:.6s;}
+@keyframes heroWiggle{
+  0%,100%{transform:rotate(0deg) translateY(0);}
+  10%{transform:rotate(-1.2deg) translateY(-1px);}
+  20%{transform:rotate(1.4deg) translateY(1px);}
+  30%{transform:rotate(-1deg) translateY(-1px);}
+  40%{transform:rotate(1deg) translateY(0);}
+  50%{transform:rotate(0deg) translateY(0);}
+}
+@media (prefers-reduced-motion: reduce){
+  .hero-title .wiggle{animation:none;}
+}
 .hero-sub{color:rgba(232,232,240,.88);font-size:1.08rem;line-height:1.75;max-width:560px;margin:0 auto 40px;}
 .hero-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:28px;}
 .btn{padding:13px 30px;border-radius:99px;font-size:.93rem;font-weight:600;transition:var(--trans);display:inline-flex;align-items:center;gap:8px;}
@@ -246,11 +266,52 @@ section{position:relative;z-index:2;padding:90px 20px}
 .featured-visual img{width:100%;height:100%;object-fit:cover;}
 .featured-visual-placeholder{width:100%;height:100%;background:linear-gradient(135deg,rgba(220,38,38,.25),rgba(22,163,74,.1));display:flex;align-items:center;justify-content:center;font-size:7rem;}
 .featured-visual-placeholder::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(220,38,38,.3),transparent 70%);}
+/* ── PRODUCT VIDEO SHOWCASE ─────────────────────────────────── */
+#productVideo{display:none;}
+#productVideo.has-video{display:block;}
+.pv-frame{
+  position:relative;max-width:920px;margin:0 auto;border-radius:var(--radius);overflow:hidden;
+  border:1px solid var(--border);background:var(--surface2);aspect-ratio:16/9;
+  box-shadow:0 0 0 rgba(220,38,38,0);
+  transform:scale(.94);opacity:0;filter:blur(6px);
+  transition:transform .8s cubic-bezier(.16,1,.3,1),opacity .8s ease,filter .8s ease,box-shadow .5s ease;
+}
+.pv-frame.visible{transform:scale(1);opacity:1;filter:blur(0);}
+.pv-frame:hover{box-shadow:0 0 50px rgba(220,38,38,.35);}
+.pv-frame video,.pv-frame iframe{width:100%;height:100%;display:block;border:0;object-fit:cover;transition:transform .6s ease;}
+.pv-frame:hover video,.pv-frame:hover iframe{transform:scale(1.02);}
+.pv-glow{position:absolute;inset:-2px;border-radius:inherit;padding:2px;z-index:-1;
+  background:linear-gradient(120deg,var(--accent),var(--accent2),var(--accent));
+  background-size:200% 200%;animation:pvGlowMove 6s linear infinite;opacity:.5;}
+@keyframes pvGlowMove{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+.pv-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,rgba(220,38,38,.15),rgba(22,163,74,.08));cursor:pointer;}
+.pv-play-btn{width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.14);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;
+  border:1px solid rgba(255,255,255,.3);transition:var(--trans);animation:pvPulse 2.4s ease-in-out infinite;}
+.pv-placeholder:hover .pv-play-btn{transform:scale(1.1);background:var(--accent);}
+@keyframes pvPulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.5)}50%{box-shadow:0 0 0 18px rgba(220,38,38,0)}}
+@media (prefers-reduced-motion: reduce){
+  .pv-frame,.pv-glow,.pv-play-btn{animation:none!important;transition:opacity .3s ease!important;}
+}
 .featured-label{font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent3);margin-bottom:10px}
 .featured-title{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;margin-bottom:14px;line-height:1.1}
 .featured-desc{color:var(--muted);line-height:1.7;margin-bottom:24px}
 .feature-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
 .f-tag{padding:5px 12px;border-radius:6px;font-size:.75rem;font-weight:500;background:var(--surface);border:1px solid var(--border);color:var(--muted);}
+
+/* ── MARQUEE ──────────────────────────────────────────────── */
+.marquee-section{position:relative;overflow:hidden;padding:16px 0;background:linear-gradient(90deg,var(--bg2),var(--bg3) 50%,var(--bg2));border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.marquee-section::before,.marquee-section::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none;}
+.marquee-section::before{left:0;background:linear-gradient(90deg,var(--bg2),transparent);}
+.marquee-section::after{right:0;background:linear-gradient(270deg,var(--bg2),transparent);}
+.marquee-track{display:flex;width:max-content;gap:0;animation:marqueeScroll 32s linear infinite;will-change:transform;transform:translateZ(0);backface-visibility:hidden;}
+.marquee-section:hover .marquee-track{animation-play-state:paused;}
+.marquee-item{display:flex;align-items:center;gap:12px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1.05rem;color:var(--text);white-space:nowrap;padding:0 32px;}
+.marquee-item i{color:var(--accent);font-size:.65rem;animation:marqueePulse 1.8s ease-in-out infinite;}
+@keyframes marqueeScroll{from{transform:translate3d(0,0,0);}to{transform:translate3d(-50%,0,0);}}
+@keyframes marqueePulse{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:1;transform:scale(1.4);}}
+@media(prefers-reduced-motion:reduce){.marquee-track{animation:none;}}
 
 /* ── REVIEWS ─────────────────────────────────────────────── */
 #reviews{background:var(--bg)}
@@ -263,11 +324,12 @@ section{position:relative;z-index:2;padding:90px 20px}
 .reviewer-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:.85rem;color:#fff;}
 .reviewer-name{font-weight:600;font-size:.85rem}
 .reviewer-loc{font-size:.75rem;color:var(--muted)}
+.reviewer-date{font-size:.7rem;color:var(--muted);opacity:.7;margin-top:2px}
 
 /* ── FOOTER ──────────────────────────────────────────────── */
 footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20px 30px;position:relative;z-index:2;}
 .footer-inner{width:min(100%,1100px);margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
-.footer-brand .nav-logo{font-size:1.4rem;margin-bottom:10px;display:inline-block}
+.footer-brand .nav-logo{font-size:1.4rem;margin-bottom:10px;display:inline-flex}
 .footer-brand p{color:var(--muted);font-size:.85rem;line-height:1.7;max-width:260px}
 .footer-col h4{font-size:.85rem;font-weight:700;margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em}
 .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
@@ -390,7 +452,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
 
 <!-- NAVBAR -->
 <nav role="navigation" aria-label="Main navigation">
-  <a class="nav-logo" href="#">☁ CloudNine</a>
+  <a class="nav-logo" href="#" id="navLogo">☁ CloudNine</a>
   <div class="nav-links">
     <a href="#hero">Home</a>
     <a href="#products">Shop</a>
@@ -442,12 +504,14 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
 <section id="hero">
   <!-- Dynamic random background image (loaded via JS) -->
   <img class="hero-bg-img" id="heroBgImg" src="Football Stadium At The Top Of Football, Football, The Top Of, Football Background Image And Wallpaper for Free Download.jpeg" alt=""/>
+  <!-- Optional admin-uploaded background video, takes priority over the image when set -->
+  <video class="hero-bg-video" id="heroBgVideo" autoplay muted loop playsinline></video>
   <div class="hero-bg-gradient"></div>
   <div class="smoke-layer" id="smokeLayer" aria-hidden="true"></div>
   <div class="hero-inner">
     <div class="hero-text-panel">
       <div class="hero-eyebrow"><i class="fas fa-fire"></i> <span id="heroEyebrowText">Premium Quality · Discreet Shipping</span></div>
-      <h1 class="hero-title"><span id="heroTitlePart1">Elevate Your </span><span id="heroTitleHighlight" class="hl">Experience</span><br><span id="heroTitlePart2">Above the Clouds</span></h1>
+      <h1 class="hero-title"><span id="heroTitlePart1">Elevate Your </span><span id="heroTitleHighlight" class="hl wiggle">Experience</span><br><span id="heroTitlePart2" class="wiggle wiggle-delay">Above the Clouds</span></h1>
       <p class="hero-sub" id="heroSubText">Curated alternative products crafted for those who appreciate quality, potency, and style. Shop with confidence — secure checkout via Telegram.</p>
     </div>
     <div class="hero-btns">
@@ -465,6 +529,11 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
       <path d="M0,40 C60,85 120,0 180,42 C240,84 300,4 360,44 C420,84 480,2 540,42 C600,82 660,0 720,40 C780,80 840,2 900,42 C960,82 1020,4 1080,42 C1130,72 1170,20 1200,40 L1200,120 L0,120 Z"></path>
     </svg>
   </div>
+</section>
+
+<!-- MARQUEE -->
+<section class="marquee-section" aria-label="Highlights ticker">
+  <div class="marquee-track" id="marqueeTrack"></div>
 </section>
 
 <!-- PRODUCTS -->
@@ -490,7 +559,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
 <section id="featured">
   <div class="container">
     <div class="featured-grid fade-up">
-      <div class="featured-visual">
+      <div class="featured-visual" onclick="addToCart(1);openCart();" style="cursor:pointer" role="button" tabindex="0" aria-label="View featured product in cart" onkeydown="if(event.key==='Enter'){addToCart(1);openCart();}">
         <div class="featured-visual-placeholder" id="featuredVisual">🌬️</div>
       </div>
       <div>
@@ -502,6 +571,23 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
           <span class="f-tag">Type-C Charging</span><span class="f-tag">Lab Tested</span><span class="f-tag">🏆 Staff Pick</span>
         </div>
         <a href="#" class="btn btn-primary" id="featuredAddBtn"><i class="fas fa-shopping-bag"></i> <span id="featuredBtnText">Add to Cart — $54.99</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT VIDEO SHOWCASE -->
+<section id="productVideo">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-eyebrow">See It In Action</div>
+      <h2 class="section-title" id="pvTitle">Watch the Drop</h2>
+      <p class="section-sub" id="pvSub">A closer look at this month's featured product.</p>
+    </div>
+    <div class="pv-frame fade-up" id="pvFrame">
+      <div class="pv-glow"></div>
+      <div class="pv-placeholder" id="pvPlaceholder">
+        <div class="pv-play-btn"><i class="fas fa-play"></i></div>
       </div>
     </div>
   </div>
@@ -522,7 +608,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
-      <div class="nav-logo">☁ CloudNine</div>
+      <div class="nav-logo" id="footerLogo">☁ CloudNine</div>
       <p>Premium alternative products for the discerning consumer. Quality you can trust, delivered discreetly.</p>
     </div>
     <div class="footer-col"><h4>Shop</h4><ul><li><a href="#products">Vapes</a></li><li><a href="#products">Flower</a></li><li><a href="#products">Edibles</a></li><li><a href="#products">Accessories</a></li></ul></div>
@@ -530,7 +616,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
     <div class="footer-col"><h4>Connect</h4><ul><li><a href="#">Telegram Channel</a></li><li><a href="#">Instagram</a></li><li><a href="#">Discord</a></li></ul></div>
   </div>
   <div class="footer-bottom container">
-    <p>© 2025 CloudNine Store · For adults 21+ only · All rights reserved</p>
+    <p id="footerCopyright">© 2025 CloudNine Store · For adults 21+ only · All rights reserved</p>
     <div class="social-links">
       <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
       <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
@@ -599,12 +685,14 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
       <div class="admin-tabs">
         <button class="admin-tab active" data-tab="add">Add Product</button>
         <button class="admin-tab" data-tab="manage">Manage Products</button>
+        <button class="admin-tab" data-tab="reviews">Reviews</button>
         <button class="admin-tab" data-tab="content">Site Content</button>
+        <button class="admin-tab" data-tab="branding">Branding</button>
         <button class="admin-tab" data-tab="colors">Theme Colors</button>
       </div>
       <!-- Add product form -->
       <div id="tabAdd">
-        <p class="admin-section-title">New Product</p>
+        <p class="admin-section-title" id="addProductTitle">New Product</p>
         <div class="admin-form">
           <div class="form-group"><label class="form-label">Product Name</label><input class="form-input" id="pName" placeholder="e.g. OG Kush Vape"/></div>
           <div class="form-group"><label class="form-label">Price ($)</label><input class="form-input" id="pPrice" type="number" step="0.01" placeholder="24.99"/></div>
@@ -627,12 +715,37 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
           <div class="form-group"><label class="form-label">Badge (optional)</label><input class="form-input" id="pBadge" placeholder="New / Hot / Sale"/></div>
           <div class="form-group"><label class="form-label">Emoji (fallback)</label><input class="form-input" id="pEmoji" placeholder="💨"/></div>
           <button class="btn-save" id="saveProduct">Save Product</button>
+          <button class="btn-save" id="cancelEditProduct" type="button" style="display:none;background:var(--surface2);color:var(--text);border:1px solid var(--border);margin-top:10px">Cancel Edit</button>
         </div>
       </div>
       <!-- Manage products -->
       <div id="tabManage" style="display:none">
         <p class="admin-section-title">All Products</p>
         <div class="admin-products-list" id="adminProductsList"></div>
+      </div>
+      <!-- Reviews -->
+      <div id="tabReviews" style="display:none">
+        <p class="admin-section-title" id="reviewFormTitle">Add Review</p>
+        <div class="admin-form">
+          <div class="form-group"><label class="form-label">Customer Name</label><input class="form-input" id="rName" placeholder="e.g. Jordan M."/></div>
+          <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="rLoc" placeholder="e.g. Los Angeles, CA"/></div>
+          <div class="form-group"><label class="form-label">Star Rating</label>
+            <select class="form-select" id="rStars">
+              <option value="5">★★★★★ (5)</option>
+              <option value="4">★★★★☆ (4)</option>
+              <option value="3">★★★☆☆ (3)</option>
+              <option value="2">★★☆☆☆ (2)</option>
+              <option value="1">★☆☆☆☆ (1)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Initials (avatar, optional)</label><input class="form-input" id="rInit" placeholder="JM"/></div>
+          <div class="form-group"><label class="form-label">Date &amp; Time</label><input class="form-input" type="datetime-local" id="rDate"/></div>
+          <div class="form-group full"><label class="form-label">Review Text</label><textarea class="form-textarea" id="rText" placeholder="What did the customer say?"></textarea></div>
+          <button class="btn-save" id="saveReview">Add Review</button>
+          <button class="btn-save" id="cancelEditReview" type="button" style="display:none;background:var(--surface2);color:var(--text);border:1px solid var(--border);margin-top:10px">Cancel Edit</button>
+        </div>
+        <p class="admin-section-title" style="margin-top:28px">All Reviews</p>
+        <div class="admin-products-list" id="adminReviewsList"></div>
       </div>
       <!-- Site content: Hero + Drop of the Month -->
       <div id="tabContent" style="display:none">
@@ -650,6 +763,15 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
               <i class="fas fa-cloud-arrow-up img-upload-icon"></i>
               <div class="img-upload-text">Click to upload a new hero background image</div>
             </div>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Background Video (optional, overrides image when set)</label>
+            <div class="img-upload-area" id="heroVideoUploadArea">
+              <input type="file" id="hBgVideoFile" accept="video/*"/>
+              <i class="fas fa-cloud-arrow-up img-upload-icon"></i>
+              <div class="img-upload-text">Click to upload a background video from your device (best under ~20MB)</div>
+            </div>
+            <button class="btn-save" id="removeHeroVideo" type="button" style="background:var(--accent3);margin-top:10px">Remove Video (use image instead)</button>
           </div>
           <button class="btn-save" id="saveHero">Save Hero Section</button>
         </div>
@@ -670,6 +792,53 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
             </div>
           </div>
           <button class="btn-save" id="saveFeatured">Save Drop of the Month</button>
+        </div>
+        <p class="admin-section-title" style="margin-top:28px">Product Video</p>
+        <div class="admin-form">
+          <div class="form-group full"><label class="form-label">Section Title</label><input class="form-input" id="pvTitleInput" placeholder="Watch the Drop"/></div>
+          <div class="form-group full"><label class="form-label">Section Subtitle</label><input class="form-input" id="pvSubInput" placeholder="A closer look at this month's featured product."/></div>
+          <div class="form-group full">
+            <label class="form-label">Video URL (MP4 link, or YouTube / Vimeo link)</label>
+            <input class="form-input" id="pvUrlInput" placeholder="https://... .mp4  or  https://youtube.com/watch?v=..."/>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">— OR — Upload Video From This Device</label>
+            <div class="img-upload-area" id="pvFileUploadArea">
+              <input type="file" id="pvFileInput" accept="video/*"/>
+              <i class="fas fa-cloud-arrow-up img-upload-icon"></i>
+              <div class="img-upload-text">Click to select a video file from your device (best under ~15MB)</div>
+            </div>
+          </div>
+          <button class="btn-save" id="savePVideo">Save Video</button>
+          <button class="btn-save" id="deletePVideo" style="background:var(--accent3);margin-top:10px">Delete Video</button>
+        </div>
+        <p class="admin-section-title" style="margin-top:28px">Marquee / Scrolling Ticker</p>
+        <div class="admin-form">
+          <div class="form-group full">
+            <label class="form-label">Quotes / Captions (one per line — scrolls continuously below the hero)</label>
+            <textarea class="form-textarea" id="mqItems" rows="6" placeholder="🔥 Free discreet shipping on orders over $75
+✦ Lab-tested · Full-spectrum · Zero compromise
+💨 New drops every week — join our Telegram"></textarea>
+          </div>
+          <button class="btn-save" id="saveMarquee">Save Marquee</button>
+        </div>
+      </div>
+      <!-- Branding: logo + site name -->
+      <div id="tabBranding" style="display:none">
+        <p class="admin-section-title">Site Identity</p>
+        <div class="admin-form">
+          <div class="form-group full"><label class="form-label">Site Name / Text Logo</label><input class="form-input" id="bSiteName" placeholder="☁ CloudNine"/></div>
+          <div class="form-group full"><label class="form-label">Browser Tab Tagline</label><input class="form-input" id="bTagline" placeholder="Premium Alternative Products"/></div>
+          <div class="form-group full">
+            <label class="form-label">Logo Image (optional — overrides text logo in nav &amp; footer when set)</label>
+            <div class="img-upload-area" id="logoUploadArea">
+              <input type="file" id="bLogoFile" accept="image/*"/>
+              <i class="fas fa-cloud-arrow-up img-upload-icon"></i>
+              <div class="img-upload-text">Click to upload a logo image from your device (PNG with transparent background recommended)</div>
+            </div>
+            <button class="btn-save" id="removeLogo" type="button" style="background:var(--accent3);margin-top:10px">Remove Logo Image (use text instead)</button>
+          </div>
+          <button class="btn-save" id="saveBranding">Save Branding</button>
         </div>
       </div>
       <!-- Theme colors -->
@@ -715,13 +884,20 @@ const DEFAULT_PRODUCTS = [
   {id:8,name:"Nectar Collector Kit",brand:"GlassArt",price:39.99,cat:"accessories",emoji:"🔥",img:"",desc:"Borosilicate glass, titanium tip included",badge:"New",stars:4},
 ];
 
-const REVIEWS = [
-  {name:"Jordan M.",loc:"Los Angeles, CA",text:"Absolutely top-tier quality. The Northern Lights vape is smoother than anything I've tried. Fast, discrete delivery too. CloudNine has my full trust.",stars:5,init:"JM"},
-  {name:"Aisha K.",loc:"Atlanta, GA",text:"Placed my order through Telegram and it was incredibly easy. Payment was smooth, packaging was discreet. The Wedding Cake flower is genuinely stunning.",stars:5,init:"AK"},
-  {name:"Devon R.",loc:"Denver, CO",text:"The cosmic gummies hit perfectly — consistent every time. Love the BTC payment option, keeps things private. 10/10 will be a repeat customer.",stars:5,init:"DR"},
-  {name:"Priya S.",loc:"Miami, FL",text:"Customer service on Telegram is actually responsive and kind. The vape selection is unmatched. Even my picky friends are converts now.",stars:5,init:"PS"},
-  {name:"Carlos T.",loc:"Houston, TX",text:"Quality is no joke. Lab tested as advertised. The pre-rolls are perfectly packed. The site is also super clean to navigate.",stars:5,init:"CT"},
-  {name:"Zoe W.",loc:"Seattle, WA",text:"That titanium grinder? I'll be buying one for every friend's birthday from now on. Sturdy, smooth, looks amazing. CloudNine is the move.",stars:5,init:"ZW"},
+const DEFAULT_REVIEWS = [
+  {id:1,name:"Jordan M.",loc:"Los Angeles, CA",text:"Absolutely top-tier quality. The Northern Lights vape is smoother than anything I've tried. Fast, discrete delivery too. CloudNine has my full trust.",stars:5,init:"JM",date:"2026-06-02T14:30:00"},
+  {id:2,name:"Aisha K.",loc:"Atlanta, GA",text:"Placed my order through Telegram and it was incredibly easy. Payment was smooth, packaging was discreet. The Wedding Cake flower is genuinely stunning.",stars:5,init:"AK",date:"2026-06-10T09:15:00"},
+  {id:3,name:"Devon R.",loc:"Denver, CO",text:"The cosmic gummies hit perfectly — consistent every time. Love the BTC payment option, keeps things private. 10/10 will be a repeat customer.",stars:5,init:"DR",date:"2026-06-18T19:45:00"},
+  {id:4,name:"Priya S.",loc:"Miami, FL",text:"Customer service on Telegram is actually responsive and kind. The vape selection is unmatched. Even my picky friends are converts now.",stars:5,init:"PS",date:"2026-07-01T11:20:00"},
+  {id:5,name:"Carlos T.",loc:"Houston, TX",text:"Quality is no joke. Lab tested as advertised. The pre-rolls are perfectly packed. The site is also super clean to navigate.",stars:5,init:"CT",date:"2026-07-09T16:05:00"},
+  {id:6,name:"Zoe W.",loc:"Seattle, WA",text:"That titanium grinder? I'll be buying one for every friend's birthday from now on. Sturdy, smooth, looks amazing. CloudNine is the move.",stars:5,init:"ZW",date:"2026-07-15T13:50:00"},
+];
+const DEFAULT_MARQUEE = [
+  "🔥 Free discreet shipping on orders over $75",
+  "✦ Lab-tested · Full-spectrum · Zero compromise",
+  "💨 New drops every week — join our Telegram",
+  "🚚 Fast, discreet delivery straight to your door",
+  "🏆 Trusted by thousands of happy customers"
 ];
 
 const TELEGRAM_HANDLE = "CloudNineStore";
@@ -733,7 +909,8 @@ const DEFAULT_HERO = {
   titleHl: "Experience",
   title2: "Above the Clouds",
   sub: "Curated alternative products crafted for those who appreciate quality, potency, and style. Shop with confidence — secure checkout via Telegram.",
-  bgImg: ""
+  bgImg: "",
+  bgVideo: ""
 };
 const DEFAULT_FEATURED = {
   label: "✦ Drop of the Month",
@@ -743,6 +920,17 @@ const DEFAULT_FEATURED = {
   btnText: "Add to Cart — $54.99",
   emoji: "🌬️",
   img: ""
+};
+const DEFAULT_PVIDEO = {
+  title: "Watch the Drop",
+  sub: "A closer look at this month's featured product.",
+  url: "",
+  file: ""
+};
+const DEFAULT_BRANDING = {
+  siteName: "☁ CloudNine",
+  tagline: "Premium Alternative Products",
+  logoImg: ""
 };
 const DEFAULT_COLORS = {
   bg:"#0a0a12", bg2:"#12121e", bg3:"#1a1a2e",
@@ -755,15 +943,19 @@ const DEFAULT_COLORS = {
 
 /* ── STATE ────────────────────────────────────────────────── */
 function getState(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
-function setState(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+function setState(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch{return false}}
 
 let cart     = getState('cn_cart',[]);
 let products = getState('cn_products', DEFAULT_PRODUCTS);
+let reviewsData = getState('cn_reviews', DEFAULT_REVIEWS);
 let theme    = getState('cn_theme','dark');
 let visitors = getState('cn_visitors', Math.floor(Math.random()*800)+200);
 let orders   = getState('cn_orders', Math.floor(Math.random()*40)+10);
 let heroData     = getState('cn_hero', DEFAULT_HERO);
 let featuredData = getState('cn_featured', DEFAULT_FEATURED);
+let pvideoData   = getState('cn_pvideo', DEFAULT_PVIDEO);
+let marqueeData  = getState('cn_marquee', DEFAULT_MARQUEE);
+let brandingData = getState('cn_branding', DEFAULT_BRANDING);
 let colors       = getState('cn_colors', null);
 let isAdmin  = false; // session only
 
@@ -775,6 +967,30 @@ function applyTheme(t){document.documentElement.setAttribute('data-theme',t);set
 applyTheme(theme);
 document.getElementById('themeToggle').addEventListener('click',()=>{theme=theme==='dark'?'light':'dark';applyTheme(theme);});
 
+/* ── BRANDING (LOGO / SITE NAME) ─────────────────────────── */
+function applyBranding(){
+  const name = brandingData.siteName || DEFAULT_BRANDING.siteName;
+  const tagline = brandingData.tagline || DEFAULT_BRANDING.tagline;
+  const logoHtml = brandingData.logoImg
+    ? `<img src="${brandingData.logoImg}" alt="${name}">`
+    : name;
+  const navLogo = document.getElementById('navLogo');
+  const footerLogo = document.getElementById('footerLogo');
+  if(navLogo) navLogo.innerHTML = logoHtml;
+  if(footerLogo) footerLogo.innerHTML = logoHtml;
+  document.title = `${name} — ${tagline}`;
+  const copyright = document.getElementById('footerCopyright');
+  if(copyright) copyright.textContent = `© ${new Date().getFullYear()} ${name.replace(/^[^\w]+/,'').trim()} Store · For adults 21+ only · All rights reserved`;
+}
+/* ── MARQUEE ──────────────────────────────────────────────── */
+function applyMarquee(){
+  const track = document.getElementById('marqueeTrack');
+  if(!track) return;
+  const items = (marqueeData && marqueeData.length) ? marqueeData : DEFAULT_MARQUEE;
+  const itemHtml = items.map(t=>`<span class="marquee-item"><i class="fas fa-circle"></i>${t}</span>`).join('');
+  // Render the sequence twice back-to-back so translate3d(-50%,0,0) creates a seamless infinite loop.
+  track.innerHTML = itemHtml + itemHtml;
+}
 /* ── HERO / FEATURED CONTENT ─────────────────────────────── */
 function applyHero(){
   document.getElementById('heroEyebrowText').textContent = heroData.eyebrow;
@@ -783,6 +999,19 @@ function applyHero(){
   document.getElementById('heroTitlePart2').textContent = heroData.title2;
   document.getElementById('heroSubText').textContent = heroData.sub;
   if(heroData.bgImg) document.getElementById('heroBgImg').src = heroData.bgImg;
+  const bgVideoEl = document.getElementById('heroBgVideo');
+  const bgImgEl = document.getElementById('heroBgImg');
+  if(heroData.bgVideo){
+    if(bgVideoEl.src !== heroData.bgVideo) bgVideoEl.src = heroData.bgVideo;
+    bgVideoEl.classList.add('active');
+    bgImgEl.style.display = 'none';
+    bgVideoEl.play().catch(()=>{});
+  } else {
+    bgVideoEl.classList.remove('active');
+    bgVideoEl.removeAttribute('src');
+    bgVideoEl.load();
+    bgImgEl.style.display = '';
+  }
 }
 function applyFeatured(){
   document.getElementById('featuredLabel').textContent = featuredData.label;
@@ -797,19 +1026,125 @@ function applyFeatured(){
     visual.textContent = featuredData.emoji;
   }
 }
+function pvEmbedUrlFor(url){
+  const yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/);
+  if(yt) return {type:'iframe', src:`https://www.youtube.com/embed/${yt[1]}?autoplay=1&rel=0`};
+  const vm = url.match(/vimeo\.com\/(\d+)/);
+  if(vm) return {type:'iframe', src:`https://player.vimeo.com/video/${vm[1]}?autoplay=1`};
+  return {type:'video', src:url};
+}
+function applyPVideo(){
+  const section = document.getElementById('productVideo');
+  document.getElementById('pvTitle').textContent = pvideoData.title;
+  document.getElementById('pvSub').textContent = pvideoData.sub;
+  const frame = document.getElementById('pvFrame');
+  const hasVideo = !!(pvideoData.file || pvideoData.url);
+  if(!hasVideo){
+    section.classList.remove('has-video');
+    return;
+  }
+  section.classList.add('has-video');
+  // Lazy: only build the actual <video>/<iframe> element when the user clicks play,
+  // so no video/embed resource is fetched until it's actually wanted — keeps initial page weight light.
+  frame.innerHTML = `<div class="pv-glow"></div>
+    <div class="pv-placeholder" id="pvPlaceholder"><div class="pv-play-btn"><i class="fas fa-play"></i></div></div>`;
+  document.getElementById('pvPlaceholder').addEventListener('click', function loadVideoOnce(){
+    if(pvideoData.file){
+      frame.innerHTML = `<div class="pv-glow"></div><video src="${pvideoData.file}" controls autoplay playsinline></video>`;
+      return;
+    }
+    const embed = pvEmbedUrlFor(pvideoData.url);
+    if(embed.type==='iframe'){
+      frame.innerHTML = `<div class="pv-glow"></div><iframe src="${embed.src}" title="${pvideoData.title}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+    } else {
+      frame.innerHTML = `<div class="pv-glow"></div><video src="${embed.src}" controls autoplay playsinline preload="none"></video>`;
+    }
+  }, {once:true});
+}
 function populateContentForm(){
   document.getElementById('hEyebrow').value = heroData.eyebrow;
   document.getElementById('hTitle1').value = heroData.title1;
   document.getElementById('hTitleHl').value = heroData.titleHl;
   document.getElementById('hTitle2').value = heroData.title2;
   document.getElementById('hSub').value = heroData.sub;
+  pendingHeroVideo=''; removeHeroVideoFlag=false;
+  if(heroData.bgVideo){
+    document.getElementById('heroVideoUploadArea').innerHTML=`<input type="file" id="hBgVideoFile" accept="video/*"><div class="img-upload-name">🎬 Background video saved on device upload</div>`;
+    bindHeroVideoFileInput();
+  } else {
+    document.getElementById('heroVideoUploadArea').innerHTML=`<input type="file" id="hBgVideoFile" accept="video/*"><i class="fas fa-cloud-arrow-up img-upload-icon"></i><div class="img-upload-text">Click to upload a background video from your device (best under ~20MB)</div>`;
+    bindHeroVideoFileInput();
+  }
   document.getElementById('fLabel').value = featuredData.label;
   document.getElementById('fTitle').value = featuredData.title;
   document.getElementById('fDesc').value = featuredData.desc;
   document.getElementById('fTags').value = featuredData.tags;
   document.getElementById('fBtnText').value = featuredData.btnText;
   document.getElementById('fEmoji').value = featuredData.emoji;
+  document.getElementById('pvTitleInput').value = pvideoData.title;
+  document.getElementById('pvSubInput').value = pvideoData.sub;
+  document.getElementById('pvUrlInput').value = pvideoData.url;
+  if(pvideoData.file){
+    document.getElementById('pvFileUploadArea').innerHTML=`<input type="file" id="pvFileInput" accept="video/*"><div class="img-upload-name">✅ Video file saved on device upload</div>`;
+    bindPVFileInput();
+  }
+  document.getElementById('mqItems').value = (marqueeData||[]).join('\n');
 }
+function populateBrandingForm(){
+  document.getElementById('bSiteName').value = brandingData.siteName || DEFAULT_BRANDING.siteName;
+  document.getElementById('bTagline').value = brandingData.tagline || DEFAULT_BRANDING.tagline;
+  pendingLogoImg=''; removeLogoFlag=false;
+  if(brandingData.logoImg){
+    document.getElementById('logoUploadArea').innerHTML=`<input type="file" id="bLogoFile" accept="image/*"><img class="img-upload-preview" src="${brandingData.logoImg}" alt="Preview"><div class="img-upload-name">✅ Logo saved on device upload</div>`;
+  } else {
+    document.getElementById('logoUploadArea').innerHTML=`<input type="file" id="bLogoFile" accept="image/*"><i class="fas fa-cloud-arrow-up img-upload-icon"></i><div class="img-upload-text">Click to upload a logo image from your device (PNG with transparent background recommended)</div>`;
+  }
+  bindLogoFileInput();
+}
+let pendingLogoImg='';
+let removeLogoFlag=false;
+function bindLogoFileInput(){
+  const input=document.getElementById('bLogoFile');
+  if(!input) return;
+  input.addEventListener('change',function(){
+    const file=this.files[0];if(!file)return;
+    if(file.size > 3*1024*1024){
+      showToast('⚠️ Logo too large — please choose an image under ~3MB','error');
+      return;
+    }
+    const reader=new FileReader();
+    reader.onload=e=>{
+      pendingLogoImg=e.target.result;
+      removeLogoFlag=false;
+      document.getElementById('logoUploadArea').innerHTML=`<input type="file" id="bLogoFile" accept="image/*"><img class="img-upload-preview" src="${pendingLogoImg}" alt="Preview"><div class="img-upload-name">${file.name}</div>`;
+      bindLogoFileInput();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+bindLogoFileInput();
+document.getElementById('removeLogo').addEventListener('click',()=>{
+  pendingLogoImg='';
+  removeLogoFlag=true;
+  document.getElementById('logoUploadArea').innerHTML=`<input type="file" id="bLogoFile" accept="image/*"><i class="fas fa-cloud-arrow-up img-upload-icon"></i><div class="img-upload-text">Click to upload a logo image from your device (PNG with transparent background recommended)</div>`;
+  bindLogoFileInput();
+  showToast('Logo image will be removed when you save branding');
+});
+document.getElementById('saveBranding').addEventListener('click',()=>{
+  brandingData = {
+    siteName: document.getElementById('bSiteName').value.trim()||DEFAULT_BRANDING.siteName,
+    tagline: document.getElementById('bTagline').value.trim()||DEFAULT_BRANDING.tagline,
+    logoImg: removeLogoFlag ? '' : (pendingLogoImg || brandingData.logoImg)
+  };
+  pendingLogoImg=''; removeLogoFlag=false;
+  const ok = setState('cn_branding', brandingData);
+  applyBranding();
+  if(ok){
+    showToast('✅ Branding updated!');
+  } else {
+    showToast('⚠️ Saved in this session, but the logo was too large to persist in browser storage — try a smaller image','error');
+  }
+});
 let pendingHeroBg='';
 function bindHeroFileInput(){
   const input=document.getElementById('hBgFile');
@@ -825,6 +1160,35 @@ function bindHeroFileInput(){
   });
 }
 bindHeroFileInput();
+let pendingHeroVideo='';
+let removeHeroVideoFlag=false;
+function bindHeroVideoFileInput(){
+  const input=document.getElementById('hBgVideoFile');
+  if(!input) return;
+  input.addEventListener('change',function(){
+    const file=this.files[0];if(!file)return;
+    if(file.size > 20*1024*1024){
+      showToast('⚠️ Video too large — please choose a file under ~20MB','error');
+      return;
+    }
+    const reader=new FileReader();
+    reader.onload=e=>{
+      pendingHeroVideo=e.target.result;
+      removeHeroVideoFlag=false;
+      document.getElementById('heroVideoUploadArea').innerHTML=`<input type="file" id="hBgVideoFile" accept="video/*"><div class="img-upload-name">🎬 ${file.name} ready to save</div>`;
+      bindHeroVideoFileInput();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+bindHeroVideoFileInput();
+document.getElementById('removeHeroVideo').addEventListener('click',()=>{
+  pendingHeroVideo='';
+  removeHeroVideoFlag=true;
+  document.getElementById('heroVideoUploadArea').innerHTML=`<input type="file" id="hBgVideoFile" accept="video/*"><i class="fas fa-cloud-arrow-up img-upload-icon"></i><div class="img-upload-text">Click to upload a background video from your device (best under ~20MB)</div>`;
+  bindHeroVideoFileInput();
+  showToast('Video will be removed when you save the hero section');
+});
 let pendingFeaturedImg='';
 function bindFeaturedFileInput(){
   const input=document.getElementById('fImgFile');
@@ -840,6 +1204,26 @@ function bindFeaturedFileInput(){
   });
 }
 bindFeaturedFileInput();
+let pendingPVFile='';
+function bindPVFileInput(){
+  const input=document.getElementById('pvFileInput');
+  if(!input) return;
+  input.addEventListener('change',function(){
+    const file=this.files[0];if(!file)return;
+    if(file.size > 20*1024*1024){
+      showToast('⚠️ Video too large — please choose a file under ~20MB','error');
+      return;
+    }
+    const reader=new FileReader();
+    reader.onload=e=>{
+      pendingPVFile=e.target.result;
+      document.getElementById('pvFileUploadArea').innerHTML=`<input type="file" id="pvFileInput" accept="video/*"><div class="img-upload-name">🎬 ${file.name} ready to save</div>`;
+      bindPVFileInput();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+bindPVFileInput();
 document.getElementById('saveHero').addEventListener('click',()=>{
   heroData = {
     eyebrow: document.getElementById('hEyebrow').value.trim()||DEFAULT_HERO.eyebrow,
@@ -847,11 +1231,17 @@ document.getElementById('saveHero').addEventListener('click',()=>{
     titleHl: document.getElementById('hTitleHl').value,
     title2: document.getElementById('hTitle2').value,
     sub: document.getElementById('hSub').value.trim()||DEFAULT_HERO.sub,
-    bgImg: pendingHeroBg || heroData.bgImg
+    bgImg: pendingHeroBg || heroData.bgImg,
+    bgVideo: removeHeroVideoFlag ? '' : (pendingHeroVideo || heroData.bgVideo)
   };
-  setState('cn_hero',heroData);
+  pendingHeroBg=''; pendingHeroVideo=''; removeHeroVideoFlag=false;
+  const ok = setState('cn_hero',heroData);
   applyHero();
-  showToast('✅ Hero section updated!');
+  if(ok){
+    showToast('✅ Hero section updated!');
+  } else {
+    showToast('⚠️ Saved in this session, but the video was too large to persist in browser storage — try a smaller file','error');
+  }
 });
 document.getElementById('saveFeatured').addEventListener('click',()=>{
   featuredData = {
@@ -866,6 +1256,41 @@ document.getElementById('saveFeatured').addEventListener('click',()=>{
   setState('cn_featured',featuredData);
   applyFeatured();
   showToast('✅ Drop of the Month updated!');
+});
+document.getElementById('savePVideo').addEventListener('click',()=>{
+  const newFile = pendingPVFile || pvideoData.file;
+  pvideoData = {
+    title: document.getElementById('pvTitleInput').value.trim()||DEFAULT_PVIDEO.title,
+    sub: document.getElementById('pvSubInput').value.trim()||DEFAULT_PVIDEO.sub,
+    url: document.getElementById('pvUrlInput').value.trim(),
+    file: newFile
+  };
+  try{
+    setState('cn_pvideo',pvideoData);
+  }catch(e){
+    showToast('⚠️ Video too large to save on-device — try a shorter clip or use the URL field instead','error');
+    return;
+  }
+  pendingPVFile='';
+  applyPVideo();
+  showToast((pvideoData.file||pvideoData.url) ? '✅ Product video updated!' : '✅ Saved (add a video to show the section)');
+});
+document.getElementById('deletePVideo').addEventListener('click',()=>{
+  pvideoData = {...pvideoData, url:'', file:''};
+  pendingPVFile='';
+  setState('cn_pvideo',pvideoData);
+  document.getElementById('pvUrlInput').value='';
+  document.getElementById('pvFileUploadArea').innerHTML=`<input type="file" id="pvFileInput" accept="video/*"><i class="fas fa-cloud-arrow-up img-upload-icon"></i><div class="img-upload-text">Click to select a video file from your device (best under ~15MB)</div>`;
+  bindPVFileInput();
+  applyPVideo();
+  showToast('🗑️ Product video removed');
+});
+document.getElementById('saveMarquee').addEventListener('click',()=>{
+  const lines = document.getElementById('mqItems').value.split('\n').map(l=>l.trim()).filter(Boolean);
+  marqueeData = lines.length ? lines : DEFAULT_MARQUEE;
+  setState('cn_marquee', marqueeData);
+  applyMarquee();
+  showToast('✅ Marquee updated!');
 });
 
 /* ── THEME COLORS ─────────────────────────────────────────── */
@@ -1016,7 +1441,7 @@ function renderProducts(cat='all'){
        `<div class="product-img-placeholder" style="display:none">${p.emoji||'📦'}</div>`
       :`<div class="product-img-placeholder">${p.emoji||'📦'}</div>`;
     return`<div class="product-card fade-up" data-id="${p.id}">
-      <div class="product-card-img">
+      <div class="product-card-img" onclick="addToCart(${p.id});openCart();" style="cursor:pointer" role="button" tabindex="0" aria-label="View ${p.name} in cart" onkeydown="if(event.key==='Enter'){addToCart(${p.id});openCart();}">
         ${imgHtml}
         ${p.badge?`<span class="product-badge">${p.badge}</span>`:''}
       </div>
@@ -1040,18 +1465,101 @@ document.getElementById('filterBar').addEventListener('click',e=>{
 });
 
 /* ── REVIEWS RENDER ───────────────────────────────────────── */
+function formatReviewDate(dateStr){
+  if(!dateStr) return '';
+  const d = new Date(dateStr);
+  if(isNaN(d.getTime())) return '';
+  return d.toLocaleString(undefined,{year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+}
+function toDatetimeLocalValue(dateStr){
+  const d = dateStr ? new Date(dateStr) : new Date();
+  const pad=n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
 function renderReviews(){
-  document.getElementById('reviewsGrid').innerHTML=REVIEWS.map(r=>`
+  document.getElementById('reviewsGrid').innerHTML=reviewsData.map(r=>`
     <div class="review-card fade-up">
       <div class="review-stars">${'★'.repeat(r.stars)}</div>
       <p class="review-text">"${r.text}"</p>
       <div class="reviewer">
         <div class="reviewer-avatar">${r.init}</div>
-        <div><div class="reviewer-name">${r.name}</div><div class="reviewer-loc">${r.loc}</div></div>
+        <div><div class="reviewer-name">${r.name}</div><div class="reviewer-loc">${r.loc}</div>${r.date?`<div class="reviewer-date">${formatReviewDate(r.date)}</div>`:''}</div>
       </div>
     </div>`).join('');
   observeFadeUps();
 }
+
+/* ── ADMIN REVIEWS MANAGEMENT ────────────────────────────── */
+function renderAdminReviews(){
+  const list=document.getElementById('adminReviewsList');
+  if(!list) return;
+  if(!reviewsData.length){list.innerHTML='<p style="color:var(--muted);padding:12px 0">No reviews yet.</p>';return;}
+  list.innerHTML=reviewsData.map(r=>`<div class="admin-product-row">
+      <div class="admin-product-thumb">${r.init||'★'}</div>
+      <div><div class="admin-product-name">${r.name} — ${'★'.repeat(r.stars)}</div><div class="admin-product-cat">${r.loc}${r.date?' · '+formatReviewDate(r.date):''}</div></div>
+      <div class="admin-actions">
+        <button class="admin-btn-sm" onclick="editReview(${r.id})" aria-label="Edit"><i class="fas fa-pen"></i></button>
+        <button class="admin-btn-sm danger" onclick="deleteReview(${r.id})" aria-label="Delete"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>`).join('');
+}
+function deleteReview(id){
+  reviewsData=reviewsData.filter(r=>r.id!==id);
+  setState('cn_reviews',reviewsData);
+  renderAdminReviews();renderReviews();
+  showToast('Review removed');
+}
+window.deleteReview=deleteReview;
+let editingReviewId=null;
+function editReview(id){
+  const r=reviewsData.find(x=>x.id===id);if(!r)return;
+  editingReviewId=id;
+  document.getElementById('rName').value=r.name||'';
+  document.getElementById('rLoc').value=r.loc||'';
+  document.getElementById('rStars').value=String(r.stars||5);
+  document.getElementById('rInit').value=r.init||'';
+  document.getElementById('rDate').value=toDatetimeLocalValue(r.date);
+  document.getElementById('rText').value=r.text||'';
+  document.getElementById('reviewFormTitle').textContent='Edit Review';
+  document.getElementById('saveReview').textContent='Update Review';
+  document.getElementById('cancelEditReview').style.display='inline-block';
+}
+window.editReview=editReview;
+function resetReviewForm(){
+  editingReviewId=null;
+  ['rName','rLoc','rInit','rText'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('rStars').value='5';
+  document.getElementById('rDate').value=toDatetimeLocalValue();
+  document.getElementById('reviewFormTitle').textContent='Add Review';
+  document.getElementById('saveReview').textContent='Add Review';
+  document.getElementById('cancelEditReview').style.display='none';
+}
+document.getElementById('cancelEditReview').addEventListener('click',resetReviewForm);
+document.getElementById('saveReview').addEventListener('click',()=>{
+  const name=document.getElementById('rName').value.trim();
+  const loc=document.getElementById('rLoc').value.trim();
+  const stars=parseInt(document.getElementById('rStars').value,10)||5;
+  const text=document.getElementById('rText').value.trim();
+  let init=document.getElementById('rInit').value.trim();
+  const dateInput=document.getElementById('rDate').value;
+  const date = dateInput ? new Date(dateInput).toISOString() : new Date().toISOString();
+  if(!name||!text){showToast('Name and review text are required','error');return;}
+  if(!init){init=name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+  if(editingReviewId!==null){
+    const idx=reviewsData.findIndex(r=>r.id===editingReviewId);
+    if(idx!==-1) reviewsData[idx]={...reviewsData[idx],name,loc,stars,text,init,date};
+    setState('cn_reviews',reviewsData);
+    renderAdminReviews();renderReviews();
+    resetReviewForm();
+    showToast('✅ Review updated!');
+  } else {
+    reviewsData.push({id:Date.now(),name,loc,stars,text,init,date});
+    setState('cn_reviews',reviewsData);
+    renderAdminReviews();renderReviews();
+    resetReviewForm();
+    showToast('✅ Review added!');
+  }
+});
 
 /* ── LOGIN ────────────────────────────────────────────────── */
 const loginOverlay=document.getElementById('loginOverlay');
@@ -1099,7 +1607,8 @@ function openAdmin(){
   if(!isAdmin){openLogin();return;}
   document.getElementById('adminOverlay').classList.add('open');
   document.body.style.overflow='hidden';
-  renderAdminMetrics();renderAdminProducts();renderChart();populateContentForm();populateColorForm();
+  renderAdminMetrics();renderAdminProducts();renderAdminReviews();renderChart();populateContentForm();populateBrandingForm();populateColorForm();
+  if(document.getElementById('rDate') && !document.getElementById('rDate').value) document.getElementById('rDate').value=toDatetimeLocalValue();
 }
 function closeAdmin(){document.getElementById('adminOverlay').classList.remove('open');document.body.style.overflow='';}
 document.getElementById('closeAdmin').addEventListener('click',closeAdmin);
@@ -1112,10 +1621,14 @@ document.querySelectorAll('.admin-tab').forEach(tab=>{
     const which=tab.dataset.tab;
     document.getElementById('tabAdd').style.display=which==='add'?'block':'none';
     document.getElementById('tabManage').style.display=which==='manage'?'block':'none';
+    document.getElementById('tabReviews').style.display=which==='reviews'?'block':'none';
     document.getElementById('tabContent').style.display=which==='content'?'block':'none';
+    document.getElementById('tabBranding').style.display=which==='branding'?'block':'none';
     document.getElementById('tabColors').style.display=which==='colors'?'block':'none';
     if(which==='manage')renderAdminProducts();
+    if(which==='reviews')renderAdminReviews();
     if(which==='content')populateContentForm();
+    if(which==='branding')populateBrandingForm();
     if(which==='colors')populateColorForm();
   });
 });
@@ -1152,7 +1665,10 @@ function renderAdminProducts(){
       <div class="admin-product-thumb">${thumb}</div>
       <div><div class="admin-product-name">${p.name}</div><div class="admin-product-cat">${p.cat}</div></div>
       <div class="admin-product-price">$${Number(p.price).toFixed(2)}</div>
-      <div class="admin-actions"><button class="admin-btn-sm danger" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button></div>
+      <div class="admin-actions">
+        <button class="admin-btn-sm" onclick="editProduct(${p.id})" aria-label="Edit"><i class="fas fa-pen"></i></button>
+        <button class="admin-btn-sm danger" onclick="deleteProduct(${p.id})" aria-label="Delete"><i class="fas fa-trash"></i></button>
+      </div>
     </div>`;
   }).join('');
 }
@@ -1161,31 +1677,69 @@ function deleteProduct(id){
   renderAdminProducts();renderProducts();renderAdminMetrics();showToast('Product removed');
 }
 window.deleteProduct=deleteProduct;
+let editingProductId=null;
+function editProduct(id){
+  const p=products.find(x=>x.id===id);if(!p)return;
+  editingProductId=id;
+  document.getElementById('pName').value=p.name||'';
+  document.getElementById('pPrice').value=p.price||'';
+  document.getElementById('pCat').value=p.cat||'vape';
+  document.getElementById('pBrand').value=p.brand||'';
+  document.getElementById('pDesc').value=p.desc||'';
+  document.getElementById('pBadge').value=p.badge||'';
+  document.getElementById('pEmoji').value=p.emoji||'';
+  pendingImgData=p.img||'';
+  const area=document.getElementById('imgUploadArea');
+  if(p.img){
+    area.innerHTML=`<input type="file" id="pImgFile" accept="image/*"><img class="img-upload-preview" src="${p.img}" alt="Preview"><div class="img-upload-name">Current image (choose a file to replace)</div>`;
+  } else {
+    area.innerHTML=`<input type="file" id="pImgFile" accept="image/*"><i class="fas fa-cloud-arrow-up img-upload-icon"></i><div class="img-upload-text">Click to upload product image (JPG, PNG, WebP)</div>`;
+  }
+  bindProductImgInput();
+  document.getElementById('addProductTitle').textContent='Edit Product';
+  document.getElementById('saveProduct').textContent='Update Product';
+  document.getElementById('cancelEditProduct').style.display='inline-block';
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.admin-tab[data-tab="add"]').classList.add('active');
+  document.getElementById('tabAdd').style.display='block';
+  document.getElementById('tabManage').style.display='none';
+  document.getElementById('tabReviews').style.display='none';
+  document.getElementById('tabContent').style.display='none';
+  document.getElementById('tabBranding').style.display='none';
+  document.getElementById('tabColors').style.display='none';
+}
+window.editProduct=editProduct;
+function resetProductForm(){
+  editingProductId=null;
+  ['pName','pPrice','pEmoji','pDesc','pBadge','pBrand'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pCat').value='vape';
+  pendingImgData='';
+  document.getElementById('imgUploadArea').innerHTML=`<input type="file" id="pImgFile" accept="image/*"><i class="fas fa-cloud-arrow-up img-upload-icon"></i><div class="img-upload-text">Click to upload product image (JPG, PNG, WebP)</div>`;
+  bindProductImgInput();
+  document.getElementById('addProductTitle').textContent='New Product';
+  document.getElementById('saveProduct').textContent='Save Product';
+  document.getElementById('cancelEditProduct').style.display='none';
+}
+document.getElementById('cancelEditProduct').addEventListener('click',resetProductForm);
 
 /* Image upload preview */
 let pendingImgData='';
-document.getElementById('pImgFile').addEventListener('change',function(){
-  const file=this.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    pendingImgData=e.target.result;
-    const area=document.getElementById('imgUploadArea');
-    area.innerHTML=`<input type="file" id="pImgFile" accept="image/*">
-      <img class="img-upload-preview" src="${pendingImgData}" alt="Preview">
-      <div class="img-upload-name">${file.name}</div>`;
-    document.getElementById('pImgFile').addEventListener('change',arguments.callee.bind(area));
-    // re-bind after innerHTML swap
-    area.querySelector('input[type=file]').addEventListener('change',function(){
-      const f=this.files[0];if(!f)return;
-      const r=new FileReader();r.onload=ev=>{
-        pendingImgData=ev.target.result;
-        area.querySelector('.img-upload-preview').src=pendingImgData;
-        area.querySelector('.img-upload-name').textContent=f.name;
-      };r.readAsDataURL(f);
-    });
-  };
-  reader.readAsDataURL(file);
-});
+function bindProductImgInput(){
+  const input=document.getElementById('pImgFile');
+  if(!input) return;
+  input.addEventListener('change',function(){
+    const file=this.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=e=>{
+      pendingImgData=e.target.result;
+      const area=document.getElementById('imgUploadArea');
+      area.innerHTML=`<input type="file" id="pImgFile" accept="image/*"><img class="img-upload-preview" src="${pendingImgData}" alt="Preview"><div class="img-upload-name">${file.name}</div>`;
+      bindProductImgInput();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+bindProductImgInput();
 
 document.getElementById('saveProduct').addEventListener('click',()=>{
   const name=document.getElementById('pName').value.trim();
@@ -1196,23 +1750,22 @@ document.getElementById('saveProduct').addEventListener('click',()=>{
   const badge=document.getElementById('pBadge').value.trim();
   const brand=document.getElementById('pBrand').value.trim();
   if(!name||isNaN(price)){showToast('Name and price are required','error');return;}
-  products.push({id:Date.now(),name,price,cat,emoji,img:pendingImgData,desc,badge,brand,stars:5});
-  setState('cn_products',products);
-  renderProducts();renderAdminMetrics();renderAdminProducts();
-  ['pName','pPrice','pEmoji','pDesc','pBadge','pBrand'].forEach(id=>document.getElementById(id).value='');
-  pendingImgData='';
-  // reset upload area
-  document.getElementById('imgUploadArea').innerHTML=`<input type="file" id="pImgFile" accept="image/*"><i class="fas fa-cloud-arrow-up img-upload-icon"></i><div class="img-upload-text">Click to upload product image (JPG, PNG, WebP)</div>`;
-  document.getElementById('pImgFile').addEventListener('change',function(){
-    const file=this.files[0];if(!file)return;
-    const reader=new FileReader();
-    reader.onload=e=>{
-      pendingImgData=e.target.result;
-      const area=document.getElementById('imgUploadArea');
-      area.innerHTML=`<input type="file" id="pImgFile" accept="image/*"><img class="img-upload-preview" src="${pendingImgData}"><div class="img-upload-name">${file.name}</div>`;
-    };reader.readAsDataURL(file);
-  });
-  showToast('✅ Product added successfully!');
+  if(editingProductId!==null){
+    const idx=products.findIndex(p=>p.id===editingProductId);
+    if(idx!==-1){
+      products[idx]={...products[idx],name,price,cat,emoji,img:pendingImgData,desc,badge,brand};
+    }
+    setState('cn_products',products);
+    renderProducts();renderAdminMetrics();renderAdminProducts();
+    resetProductForm();
+    showToast('✅ Product updated successfully!');
+  } else {
+    products.push({id:Date.now(),name,price,cat,emoji,img:pendingImgData,desc,badge,brand,stars:5});
+    setState('cn_products',products);
+    renderProducts();renderAdminMetrics();renderAdminProducts();
+    resetProductForm();
+    showToast('✅ Product added successfully!');
+  }
 });
 
 /* ── FEATURED ADD ─────────────────────────────────────────── */
@@ -1282,7 +1835,7 @@ let smokeResizeTimer;
 window.addEventListener('resize',()=>{clearTimeout(smokeResizeTimer);smokeResizeTimer=setTimeout(initSmokeEffect,300);});
 
 renderProducts();renderReviews();renderCart();observeFadeUps();
-applyHero();applyFeatured();applyColors();
+applyBranding();applyHero();applyFeatured();applyPVideo();applyMarquee();applyColors();
 window.addToCart=addToCart;window.changeQty=changeQty;window.removeFromCart=removeFromCart;
 </script>
 </body>
