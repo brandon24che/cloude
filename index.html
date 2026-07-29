@@ -139,6 +139,61 @@ nav.scrolled{box-shadow:0 8px 30px rgba(0,0,0,.35);background:var(--surface);}
   .img-lightbox-overlay{padding:14px}
 }
 
+/* ── PRODUCT DETAIL MODAL (3D Visualizer + Aroma Radar) ──── */
+.pd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:2100;opacity:0;pointer-events:none;transition:opacity .3s ease;display:flex;align-items:center;justify-content:center;padding:24px;}
+.pd-overlay.open{opacity:1;pointer-events:all}
+.pd-box{position:relative;display:flex;width:min(94vw,1020px);max-height:90vh;background:var(--bg2);border:1px solid var(--border);border-radius:22px;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,.6);transform:scale(.95);opacity:0;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s ease;}
+.pd-overlay.open .pd-box{transform:scale(1);opacity:1}
+.pd-close{position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.15);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.9rem;z-index:5;transition:var(--trans);}
+.pd-close:hover{background:var(--accent3)}
+.pd-visual{flex:1 1 52%;min-width:0;background:radial-gradient(circle at 50% 30%,var(--bg3),var(--bg2) 75%);display:flex;flex-direction:column;position:relative;}
+.pd-viewmode{position:absolute;top:16px;left:16px;z-index:4;display:flex;gap:6px;background:rgba(0,0,0,.4);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);border-radius:99px;padding:4px;}
+.pd-viewmode button{padding:6px 14px;border-radius:99px;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.65);background:transparent;transition:var(--trans);display:flex;align-items:center;gap:5px;}
+.pd-viewmode button.active{background:var(--accent);color:#fff;}
+.pd-stage{flex:1;position:relative;display:flex;align-items:center;justify-content:center;min-height:340px;}
+.pd-stage img{width:100%;height:100%;object-fit:contain;padding:34px;}
+.pd-3d-canvas-wrap{position:absolute;inset:0;display:none;cursor:grab;touch-action:none;}
+.pd-3d-canvas-wrap.active{display:block}
+.pd-3d-canvas-wrap:active{cursor:grabbing}
+.pd-3d-canvas-wrap canvas{width:100%;height:100%;display:block;}
+.pd-3d-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:.7rem;color:rgba(255,255,255,.55);background:rgba(0,0,0,.4);padding:6px 14px;border-radius:99px;display:flex;align-items:center;gap:6px;pointer-events:none;letter-spacing:.02em;white-space:nowrap;}
+.pd-3d-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85rem;gap:8px;}
+.pd-info{flex:1 1 48%;min-width:0;padding:32px 32px 28px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
+.pd-badge{align-self:flex-start;padding:4px 12px;border-radius:99px;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+.pd-brand{color:var(--muted);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+.pd-name{font-size:1.55rem;font-weight:800;line-height:1.15;}
+.pd-stars{color:#f5b83d;font-size:.9rem;letter-spacing:2px;}
+.pd-desc{color:var(--muted);font-size:.9rem;line-height:1.65;}
+.pd-price{font-family:'Bricolage Grotesque',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent2);}
+.pd-cta{margin-top:2px;width:100%;justify-content:center;}
+.pd-aroma{margin-top:10px;padding-top:18px;border-top:1px solid var(--border);}
+.pd-aroma h4{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:7px;}
+.pd-aroma-sub{font-size:.78rem;color:var(--muted);margin-bottom:12px;}
+.pd-radar-wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.pd-radar-wrap svg{flex-shrink:0;overflow:visible;}
+.pd-radar-legend{display:flex;flex-direction:column;gap:6px;font-size:.76rem;color:var(--muted);flex:1;min-width:120px;}
+.pd-radar-legend span.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent2);margin-right:6px;}
+@media(max-width:800px){
+  .pd-box{flex-direction:column;width:min(94vw,480px);max-height:92vh;overflow-y:auto;}
+  .pd-visual{min-height:280px;}
+  .pd-info{padding:22px 22px 26px;}
+  .pd-name{font-size:1.25rem;}
+}
+
+/* ── FREQUENTLY BOUGHT TOGETHER (cart) ───────────────────── */
+.fbt-block{padding:14px 24px 4px;border-top:1px solid var(--border);flex-shrink:0;}
+.fbt-block h4{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.fbt-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:10px;-webkit-overflow-scrolling:touch;}
+.fbt-row::-webkit-scrollbar{height:4px}
+.fbt-card{flex:0 0 108px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px;transition:var(--trans);}
+.fbt-card:hover{border-color:var(--accent)}
+.fbt-card-img{width:100%;height:72px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:1.6rem;}
+.fbt-card-img img{width:100%;height:100%;object-fit:cover;}
+.fbt-card-name{font-size:.68rem;font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:1.7em;}
+.fbt-card-price{font-size:.72rem;font-weight:700;color:var(--accent2);}
+.fbt-card-add{margin-top:2px;padding:5px;border-radius:7px;background:var(--accent);color:#fff;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px;transition:var(--trans);}
+.fbt-card-add:hover{background:#15803d}
+
 /* ── PRODUCT IMAGE ZOOM HINT ─────────────────────────────── */
 .product-card-img{position:relative;}
 .featured-visual{position:relative;}
@@ -648,6 +703,43 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
   </div>
 </div>
 
+<!-- PRODUCT DETAIL MODAL: 3D Visualizer + Aroma Radar -->
+<div class="pd-overlay" id="pdOverlay" role="dialog" aria-modal="true" aria-label="Product details">
+  <div class="pd-box">
+    <button class="pd-close" id="pdClose" aria-label="Close product details"><i class="fas fa-times"></i></button>
+    <div class="pd-visual">
+      <div class="pd-viewmode" id="pdViewMode">
+        <button type="button" class="active" data-mode="photo"><i class="fas fa-image"></i> Photo</button>
+        <button type="button" data-mode="3d"><i class="fas fa-cube"></i> 360° View</button>
+      </div>
+      <div class="pd-stage">
+        <img id="pdImg" src="" alt=""/>
+        <div class="pd-3d-canvas-wrap" id="pd3dWrap">
+          <div class="pd-3d-loading" id="pd3dLoading"><i class="fas fa-circle-notch fa-spin"></i> Loading 3D model…</div>
+        </div>
+        <div class="pd-3d-hint" id="pd3dHint" style="display:none"><i class="fas fa-arrows-left-right"></i> Drag to rotate</div>
+      </div>
+    </div>
+    <div class="pd-info">
+      <span class="pd-badge" id="pdBadge" style="display:none"></span>
+      <span class="pd-brand" id="pdBrand"></span>
+      <h3 class="pd-name" id="pdName"></h3>
+      <div class="pd-stars" id="pdStars"></div>
+      <p class="pd-desc" id="pdDesc"></p>
+      <div class="pd-price" id="pdPrice"></div>
+      <button class="btn btn-primary pd-cta" id="pdCta"><i class="fas fa-shopping-bag"></i> <span>Add to Cart</span></button>
+      <div class="pd-aroma" id="pdAromaBlock" style="display:none">
+        <h4><i class="fas fa-wind"></i> Flavor &amp; Terpene Profile</h4>
+        <p class="pd-aroma-sub">A snapshot of this product's dominant aroma notes.</p>
+        <div class="pd-radar-wrap">
+          <svg id="pdRadarSvg" width="180" height="180" viewBox="0 0 180 180"></svg>
+          <div class="pd-radar-legend" id="pdRadarLegend"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- LOGIN MODAL -->
 <div class="modal-overlay" id="loginOverlay">
   <div class="login-modal">
@@ -808,6 +900,10 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
     <button class="close-cart" id="closeCart"><i class="fas fa-times"></i></button>
   </div>
   <div class="cart-items" id="cartItems"></div>
+  <div class="fbt-block" id="fbtBlock" style="display:none">
+    <h4><i class="fas fa-wand-magic-sparkles"></i> Frequently Bought Together</h4>
+    <div class="fbt-row" id="fbtRow"></div>
+  </div>
   <div class="cart-footer">
     <div class="cart-summary">
       <div class="cart-row"><span>Subtotal</span><span id="cartSubtotal">$0.00</span></div>
@@ -1157,6 +1253,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
 
 <div class="toast-container" id="toastContainer"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 /* ── DATA ─────────────────────────────────────────────────── */
 // Fake placeholder images via picsum (deterministic by seed)
@@ -1168,14 +1265,20 @@ const PLACEHOLDER_IMGS = {
 };
 
 const DEFAULT_PRODUCTS = [
-  {id:1,name:"Northern Lights Live Resin",brand:"CloudNine Labs",price:54.99,cat:"vape",emoji:"💨",img:"",desc:"Full-spectrum live resin, 2g, Type-C charging",badge:"Hot",stars:5},
-  {id:2,name:"OG Kush Disposable",brand:"GreenLeaf Co",price:34.99,cat:"vape",emoji:"🌬️",img:"",desc:"Classic OG flavor in a sleek 1g disposable",badge:"",stars:5},
-  {id:3,name:"Wedding Cake Flower",brand:"PremiumBud",price:45.00,cat:"flower",emoji:"🌿",img:"",desc:"3.5g top-shelf indoor grown, dense nugs",badge:"New",stars:4},
-  {id:4,name:"Sour Diesel Pre-Rolls",brand:"RolledUp",price:22.99,cat:"flower",emoji:"🍃",img:"",desc:"5-pack infused pre-rolls, 0.7g each",badge:"",stars:5},
-  {id:5,name:"Cosmic Gummies 500mg",brand:"InfiniteEdibles",price:28.00,cat:"edibles",emoji:"🍬",img:"",desc:"20-piece pack, 25mg each, assorted flavors",badge:"Best Seller",stars:5},
-  {id:6,name:"Dark Chocolate Bars",brand:"HighCacao",price:18.99,cat:"edibles",emoji:"🍫",img:"",desc:"100mg, premium 72% dark chocolate",badge:"",stars:4},
-  {id:7,name:"Titanium Grinder",brand:"GrindPro",price:29.99,cat:"accessories",emoji:"⚙️",img:"",desc:"4-piece, CNC-machined, kief catcher",badge:"",stars:5},
-  {id:8,name:"Nectar Collector Kit",brand:"GlassArt",price:39.99,cat:"accessories",emoji:"🔥",img:"",desc:"Borosilicate glass, titanium tip included",badge:"New",stars:4},
+  {id:1,name:"Northern Lights Live Resin",brand:"CloudNine Labs",price:54.99,cat:"vape",emoji:"💨",img:"",desc:"Full-spectrum live resin, 2g, Type-C charging",badge:"Hot",stars:5,
+    aroma:{Earthy:88,Pine:72,Sweet:40,Citrus:18,Berry:25,Diesel:35},pairs:[7,8,3]},
+  {id:2,name:"OG Kush Disposable",brand:"GreenLeaf Co",price:34.99,cat:"vape",emoji:"🌬️",img:"",desc:"Classic OG flavor in a sleek 1g disposable",badge:"",stars:5,
+    aroma:{Earthy:70,Pine:55,Sweet:30,Citrus:22,Berry:15,Diesel:60},pairs:[7,4,8]},
+  {id:3,name:"Wedding Cake Flower",brand:"PremiumBud",price:45.00,cat:"flower",emoji:"🌿",img:"",desc:"3.5g top-shelf indoor grown, dense nugs",badge:"New",stars:4,
+    aroma:{Earthy:45,Pine:20,Sweet:85,Citrus:35,Berry:60,Diesel:15},pairs:[7,8,1]},
+  {id:4,name:"Sour Diesel Pre-Rolls",brand:"RolledUp",price:22.99,cat:"flower",emoji:"🍃",img:"",desc:"5-pack infused pre-rolls, 0.7g each",badge:"",stars:5,
+    aroma:{Earthy:55,Pine:30,Sweet:20,Citrus:45,Berry:10,Diesel:90},pairs:[7,2,8]},
+  {id:5,name:"Cosmic Gummies 500mg",brand:"InfiniteEdibles",price:28.00,cat:"edibles",emoji:"🍬",img:"",desc:"20-piece pack, 25mg each, assorted flavors",badge:"Best Seller",stars:5,
+    aroma:{Earthy:10,Pine:5,Sweet:92,Citrus:65,Berry:80,Diesel:5},pairs:[6,3,1]},
+  {id:6,name:"Dark Chocolate Bars",brand:"HighCacao",price:18.99,cat:"edibles",emoji:"🍫",img:"",desc:"100mg, premium 72% dark chocolate",badge:"",stars:4,
+    aroma:{Earthy:35,Pine:5,Sweet:80,Citrus:15,Berry:20,Diesel:5},pairs:[5,3,2]},
+  {id:7,name:"Titanium Grinder",brand:"GrindPro",price:29.99,cat:"accessories",emoji:"⚙️",img:"",desc:"4-piece, CNC-machined, kief catcher",badge:"",stars:5,pairs:[1,3,8]},
+  {id:8,name:"Nectar Collector Kit",brand:"GlassArt",price:39.99,cat:"accessories",emoji:"🔥",img:"",desc:"Borosilicate glass, titanium tip included",badge:"New",stars:4,pairs:[1,4,7]},
 ];
 
 const DEFAULT_REVIEWS = [
@@ -2006,6 +2109,7 @@ function renderCart(){
   const t=getCartTotal();
   document.getElementById('cartSubtotal').textContent='$'+t.toFixed(2);
   document.getElementById('cartTotal').textContent='$'+t.toFixed(2);
+  renderFBT();
   if(!cart.length){el.innerHTML=`<div class="cart-empty"><i class="fas fa-bag-shopping"></i><p>Your cart is empty</p><a href="#products" class="btn btn-outline" style="font-size:.82rem;padding:8px 20px" onclick="closeCart()">Start Shopping</a></div>`;return;}
   el.innerHTML=cart.map(item=>{
     const p=products.find(x=>x.id===item.id);if(!p)return'';
@@ -2128,6 +2232,281 @@ function openProductLightbox(id){
 }
 window.openProductLightbox=openProductLightbox;
 
+/* ── PRODUCT DETAIL MODAL: 3D VISUALIZER + AROMA RADAR ────── */
+const pdOverlay=document.getElementById('pdOverlay');
+const pdImg=document.getElementById('pdImg');
+const pd3dWrap=document.getElementById('pd3dWrap');
+const pd3dLoading=document.getElementById('pd3dLoading');
+const pd3dHint=document.getElementById('pd3dHint');
+const pdViewMode=document.getElementById('pdViewMode');
+let pdCurrentProduct=null;
+let pdThree=null; // holds {renderer,scene,camera,mesh,raf,dragging,onDown,onMove,onUp}
+
+function pdSetMode(mode){
+  pdViewMode.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));
+  if(mode==='3d'){
+    pdImg.style.display='none';
+    pd3dWrap.classList.add('active');
+    pd3dHint.style.display='flex';
+    if(pdCurrentProduct) initThreeViewer(pdCurrentProduct);
+  } else {
+    pdImg.style.display='block';
+    pd3dWrap.classList.remove('active');
+    pd3dHint.style.display='none';
+    disposeThreeViewer();
+  }
+}
+pdViewMode.addEventListener('click',e=>{
+  const btn=e.target.closest('button');if(!btn)return;
+  pdSetMode(btn.dataset.mode);
+});
+
+function openProductModal(id){
+  const p=products.find(x=>x.id===id);if(!p)return;
+  pdCurrentProduct=p;
+  const imgSrc=p.img||PLACEHOLDER_IMGS[p.cat]||'';
+  const outOfStock=p.stock!==undefined&&p.stock!==null&&p.stock<=0;
+
+  pdImg.src=imgSrc;pdImg.alt=p.name;
+  document.getElementById('pdBrand').textContent=p.brand||'';
+  document.getElementById('pdName').textContent=p.name;
+  document.getElementById('pdDesc').textContent=p.desc||'';
+  document.getElementById('pdPrice').textContent='$'+Number(p.price).toFixed(2);
+  const stars=document.getElementById('pdStars');
+  stars.textContent='★'.repeat(p.stars||5)+'☆'.repeat(5-(p.stars||5));
+  const badge=document.getElementById('pdBadge');
+  if(outOfStock){badge.textContent='Sold Out';badge.style.display='inline-block';badge.style.background='var(--accent3)';}
+  else if(p.badge){badge.textContent=p.badge;badge.style.display='inline-block';badge.style.background='var(--accent)';}
+  else badge.style.display='none';
+
+  const cta=document.getElementById('pdCta');
+  cta.disabled=!!outOfStock;
+  cta.style.opacity=outOfStock?'.45':'';
+  cta.style.cursor=outOfStock?'not-allowed':'pointer';
+  cta.querySelector('span').textContent=outOfStock?'Sold Out':'Add to Cart';
+  cta.onclick=()=>{if(!outOfStock){addToCart(p.id);openCart();closeProductModal();}};
+
+  const aromaBlock=document.getElementById('pdAromaBlock');
+  if(p.aroma){aromaBlock.style.display='block';drawAromaRadar(p.aroma);}
+  else aromaBlock.style.display='none';
+
+  pdSetMode('photo');
+  pdOverlay.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeProductModal(){
+  pdOverlay.classList.remove('open');
+  document.body.style.overflow='';
+  disposeThreeViewer();
+  setTimeout(()=>{if(!pdOverlay.classList.contains('open'))pdImg.src='';},300);
+}
+document.getElementById('pdClose').addEventListener('click',closeProductModal);
+pdOverlay.addEventListener('click',e=>{if(e.target===pdOverlay)closeProductModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pdOverlay.classList.contains('open'))closeProductModal();});
+window.openProductModal=openProductModal;
+window.closeProductModal=closeProductModal;
+
+/* ── THREE.JS 360° PRODUCT VIEWER ─────────────────────────── */
+function disposeThreeViewer(){
+  if(!pdThree)return;
+  cancelAnimationFrame(pdThree.raf);
+  pd3dWrap.removeEventListener('pointerdown',pdThree.onDown);
+  window.removeEventListener('pointermove',pdThree.onMove);
+  window.removeEventListener('pointerup',pdThree.onUp);
+  window.removeEventListener('resize',pdThree.onResize);
+  if(pdThree.renderer){
+    pdThree.renderer.dispose();
+    if(pdThree.renderer.domElement&&pdThree.renderer.domElement.parentNode===pd3dWrap){
+      pd3dWrap.removeChild(pdThree.renderer.domElement);
+    }
+  }
+  pdThree=null;
+  pd3dLoading.style.display='flex';
+}
+function initThreeViewer(product){
+  disposeThreeViewer();
+  if(typeof THREE==='undefined'){pd3dLoading.innerHTML='<i class="fas fa-triangle-exclamation"></i> 3D engine unavailable';return;}
+  pd3dLoading.style.display='flex';
+
+  const catColors={vape:0xdc2626,flower:0x16a34a,edibles:0xd97706,accessories:0x6366f1};
+  const brandColor=catColors[product.cat]||0xdc2626;
+  const w=pd3dWrap.clientWidth||400, h=pd3dWrap.clientHeight||400;
+
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(32,w/h,0.1,100);
+  camera.position.set(0,0,7);
+
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.setSize(w,h);
+  pd3dWrap.appendChild(renderer.domElement);
+
+  // Lighting
+  scene.add(new THREE.AmbientLight(0xffffff,0.65));
+  const key=new THREE.DirectionalLight(0xffffff,0.9);key.position.set(3,4,5);scene.add(key);
+  const rim=new THREE.DirectionalLight(brandColor,0.8);rim.position.set(-4,-2,-3);scene.add(rim);
+  const fill=new THREE.PointLight(0xffffff,0.4);fill.position.set(0,0,4);scene.add(fill);
+
+  const group=new THREE.Group();
+  scene.add(group);
+
+  function buildMesh(texture){
+    // A slim "product card" that spins in 3D, photo mapped to the front face,
+    // brand-tinted bezel on the sides so it still reads as an object in space.
+    const geo=new THREE.BoxGeometry(2.6,3.6,0.22);
+    const sideMat=new THREE.MeshStandardMaterial({color:brandColor,metalness:0.35,roughness:0.45});
+    const frontMat=texture
+      ?new THREE.MeshStandardMaterial({map:texture,roughness:0.55,metalness:0.1})
+      :new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.55,metalness:0.1});
+    const backMat=new THREE.MeshStandardMaterial({color:0x111116,roughness:0.6,metalness:0.2});
+    // BoxGeometry material order: +x,-x,+y,-y,+z(front),-z(back)
+    const mats=[sideMat,sideMat,sideMat,sideMat,frontMat,backMat];
+    const mesh=new THREE.Mesh(geo,mats);
+    group.add(mesh);
+
+    // Soft contact shadow
+    const shadowGeo=new THREE.CircleGeometry(1.9,32);
+    const shadowMat=new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.35});
+    const shadow=new THREE.Mesh(shadowGeo,shadowMat);
+    shadow.rotation.x=-Math.PI/2;shadow.position.y=-2.05;
+    scene.add(shadow);
+
+    pd3dLoading.style.display='none';
+  }
+
+  const imgSrc=product.img||PLACEHOLDER_IMGS[product.cat]||'';
+  if(imgSrc){
+    const loader=new THREE.TextureLoader();
+    loader.setCrossOrigin('anonymous');
+    loader.load(imgSrc,
+      tex=>{tex.colorSpace=THREE.SRGBColorSpace||tex.colorSpace;buildMesh(tex);},
+      undefined,
+      ()=>{buildMesh(null);}
+    );
+  } else {
+    buildMesh(null);
+  }
+
+  // Drag-to-rotate + gentle auto-rotate when idle
+  let rotY=0.3, rotX=0, dragging=false, lastX=0, lastY=0, idleTimer=null;
+  function markIdleSoon(){clearTimeout(idleTimer);idleTimer=setTimeout(()=>{autoRotate=true;},1800);}
+  let autoRotate=true;
+
+  const onDown=e=>{dragging=true;autoRotate=false;lastX=e.clientX;lastY=e.clientY;pd3dWrap.setPointerCapture&&pd3dWrap.setPointerCapture(e.pointerId);};
+  const onMove=e=>{
+    if(!dragging)return;
+    const dx=e.clientX-lastX, dy=e.clientY-lastY;
+    lastX=e.clientX;lastY=e.clientY;
+    rotY+=dx*0.008;
+    rotX=Math.max(-0.5,Math.min(0.5,rotX+dy*0.006));
+  };
+  const onUp=()=>{dragging=false;markIdleSoon();};
+  pd3dWrap.addEventListener('pointerdown',onDown);
+  window.addEventListener('pointermove',onMove);
+  window.addEventListener('pointerup',onUp);
+
+  function onResize(){
+    const nw=pd3dWrap.clientWidth||w, nh=pd3dWrap.clientHeight||h;
+    camera.aspect=nw/nh;camera.updateProjectionMatrix();
+    renderer.setSize(nw,nh);
+  }
+  window.addEventListener('resize',onResize);
+
+  function animate(){
+    if(autoRotate&&!dragging)rotY+=0.006;
+    group.rotation.y=rotY;
+    group.rotation.x=rotX;
+    renderer.render(scene,camera);
+    pdThree.raf=requestAnimationFrame(animate);
+  }
+
+  pdThree={renderer,scene,camera,group,onDown,onMove,onUp,onResize,raf:0};
+  animate();
+}
+
+/* ── AROMA / TERPENE RADAR CHART (SVG) ────────────────────── */
+function drawAromaRadar(aroma){
+  const svg=document.getElementById('pdRadarSvg');
+  const legend=document.getElementById('pdRadarLegend');
+  const labels=Object.keys(aroma);
+  const n=labels.length;
+  const cx=90,cy=90,maxR=64;
+  const angle=i=>(Math.PI*2*i/n)-Math.PI/2;
+
+  let rings='';
+  for(let ring=1;ring<=3;ring++){
+    const r=maxR*ring/3;
+    const pts=labels.map((_,i)=>{const a=angle(i);return `${cx+r*Math.cos(a)},${cy+r*Math.sin(a)}`;}).join(' ');
+    rings+=`<polygon points="${pts}" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>`;
+  }
+  let spokes='';
+  labels.forEach((label,i)=>{
+    const a=angle(i);
+    const x=cx+maxR*Math.cos(a), y=cy+maxR*Math.sin(a);
+    spokes+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>`;
+    const lx=cx+(maxR+16)*Math.cos(a), ly=cy+(maxR+16)*Math.sin(a);
+    spokes+=`<text x="${lx}" y="${ly}" font-size="8.5" fill="var(--muted)" text-anchor="middle" dominant-baseline="middle">${label}</text>`;
+  });
+  const dataPts=labels.map((label,i)=>{
+    const a=angle(i);
+    const val=Math.max(0,Math.min(100,aroma[label]))/100;
+    const r=maxR*val;
+    return `${cx+r*Math.cos(a)},${cy+r*Math.sin(a)}`;
+  }).join(' ');
+  const dataShape=`<polygon points="${dataPts}" fill="rgba(22,163,74,0.28)" stroke="var(--accent2)" stroke-width="2"/>`;
+  const dots=labels.map((label,i)=>{
+    const a=angle(i);
+    const val=Math.max(0,Math.min(100,aroma[label]))/100;
+    const r=maxR*val;
+    return `<circle cx="${cx+r*Math.cos(a)}" cy="${cy+r*Math.sin(a)}" r="2.6" fill="var(--accent2)"/>`;
+  }).join('');
+
+  svg.innerHTML=rings+spokes+dataShape+dots;
+  legend.innerHTML=labels.map(l=>`<div><span class="dot"></span>${l}: <strong>${aroma[l]}%</strong></div>`).join('');
+}
+
+/* ── FREQUENTLY BOUGHT TOGETHER (smart recommendations) ───── */
+function getFrequentlyBoughtTogether(){
+  const inCartIds=new Set(cart.map(i=>i.id));
+  if(!inCartIds.size)return[];
+  const scores=new Map();
+  cart.forEach(item=>{
+    const p=products.find(x=>x.id===item.id);if(!p)return;
+    (p.pairs||[]).forEach(pid=>{
+      if(inCartIds.has(pid))return;
+      scores.set(pid,(scores.get(pid)||0)+2);
+    });
+    // fallback: same-category items also weighted, lower priority
+    products.forEach(o=>{
+      if(o.id===p.id||inCartIds.has(o.id))return;
+      if(o.cat===p.cat)scores.set(o.id,(scores.get(o.id)||0)+1);
+    });
+  });
+  return[...scores.entries()]
+    .sort((a,b)=>b[1]-a[1])
+    .map(([id])=>products.find(p=>p.id===id))
+    .filter(p=>p&&!(p.stock!==undefined&&p.stock!==null&&p.stock<=0))
+    .slice(0,4);
+}
+function renderFBT(){
+  const block=document.getElementById('fbtBlock'), row=document.getElementById('fbtRow');
+  const recs=getFrequentlyBoughtTogether();
+  if(!recs.length){block.style.display='none';row.innerHTML='';return;}
+  block.style.display='block';
+  row.innerHTML=recs.map(p=>{
+    const imgSrc=p.img||PLACEHOLDER_IMGS[p.cat]||'';
+    const imgHtml=imgSrc
+      ?`<img src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.textContent='${p.emoji||'📦'}'">`
+      :(p.emoji||'📦');
+    return`<div class="fbt-card">
+      <div class="fbt-card-img">${imgHtml}</div>
+      <div class="fbt-card-name">${p.name}</div>
+      <div class="fbt-card-price">$${Number(p.price).toFixed(2)}</div>
+      <button class="fbt-card-add" onclick="addToCart(${p.id})"><i class="fas fa-plus"></i> Add</button>
+    </div>`;
+  }).join('');
+}
+
 /* ── PRODUCTS RENDER ──────────────────────────────────────── */
 function stockBadgeHtml(p){
   if(p.stock===undefined || p.stock===null) return '';
@@ -2146,9 +2525,9 @@ function renderProducts(cat='all'){
       ?`<img src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`+
        `<div class="product-img-placeholder" style="display:none">${p.emoji||'📦'}</div>`
       :`<div class="product-img-placeholder">${p.emoji||'📦'}</div>`;
-    const zoomClick=imgSrc?`openProductLightbox(${p.id})`:'';
+    const zoomClick=`openProductModal(${p.id})`;
     return`<div class="product-card fade-up" data-id="${p.id}">
-      <div class="product-card-img" onclick="${zoomClick}" style="cursor:${imgSrc?'zoom-in':'default'}" role="button" tabindex="0" aria-label="View full details of ${p.name}" onkeydown="if(event.key==='Enter'){${zoomClick}}">
+      <div class="product-card-img" onclick="${zoomClick}" style="cursor:zoom-in" role="button" tabindex="0" aria-label="View full details of ${p.name}" onkeydown="if(event.key==='Enter'){${zoomClick}}">
         ${imgHtml}
         ${imgSrc?'<span class="img-zoom-hint" aria-hidden="true"><i class="fas fa-expand"></i></span>':''}
         ${p.badge&&!outOfStock?`<span class="product-badge">${p.badge}</span>`:''}
