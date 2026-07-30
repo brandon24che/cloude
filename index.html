@@ -642,9 +642,69 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .fade-up{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
 .fade-up.visible{opacity:1;transform:translateY(0)}
+
+/* ── AGE GATE (21+) ──────────────────────────────────────── */
+:root{--agegate-blur:10px;--agegate-dark:.72;--agegate-min-age:21;--agegate-card-blur:16px;--agegate-card-opacity:.55;}
+#ageGateOverlay{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 50% 30%,rgba(10,10,14,calc(var(--agegate-dark) * .76)),rgba(0,0,0,var(--agegate-dark)));
+  backdrop-filter:blur(var(--agegate-blur)) saturate(1.1);-webkit-backdrop-filter:blur(var(--agegate-blur)) saturate(1.1);
+  padding:20px;}
+#ageGateOverlay.hidden{display:none}
+.age-gate-card{width:min(420px,94vw);
+  background:color-mix(in srgb, var(--bg2) calc(var(--agegate-card-opacity) * 100%), transparent);
+  backdrop-filter:blur(var(--agegate-card-blur)) saturate(1.4);-webkit-backdrop-filter:blur(var(--agegate-card-blur)) saturate(1.4);
+  border:1px solid rgba(255,255,255,.14);border-radius:24px;
+  padding:38px 32px 30px;text-align:center;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08);
+  animation:ageGateIn .5s cubic-bezier(.2,.9,.3,1.2);}
+@keyframes ageGateIn{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.age-gate-logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.4rem;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;margin-bottom:14px;display:inline-flex;align-items:center;gap:8px;}
+.age-gate-icon{width:56px;height:56px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--accent),var(--accent3));font-size:1.5rem;color:#fff;}
+.age-gate-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.3rem;color:var(--text);margin-bottom:8px;}
+.age-gate-text{color:var(--muted);font-size:.88rem;line-height:1.5;margin-bottom:24px;}
+.age-gate-btns{display:flex;gap:12px;margin-bottom:16px;}
+.age-gate-btn{flex:1;padding:13px 10px;border-radius:99px;font-weight:700;font-size:.9rem;cursor:pointer;border:1px solid var(--border);
+  transition:var(--trans,all .2s ease);}
+.age-gate-yes{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;}
+.age-gate-yes:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.age-gate-no{background:transparent;color:var(--muted);}
+.age-gate-no:hover{background:var(--surface);color:var(--text);}
+.age-gate-legal{font-size:.7rem;color:var(--muted);opacity:.7;line-height:1.5;}
+.age-gate-blocked{display:none;padding:24px 6px 4px;}
+.age-gate-blocked.show{display:block;}
+.age-gate-blocked p{color:var(--muted);font-size:.85rem;line-height:1.6;}
+body.age-locked{overflow:hidden!important;}
+/* range slider look (admin) */
+.admin-range-row{display:flex;align-items:center;gap:12px}
+.admin-range-row input[type=range]{flex:1;accent-color:var(--accent);}
+.admin-range-val{min-width:44px;text-align:right;font-size:.8rem;color:var(--muted);font-weight:600}
 </style>
 </head>
 <body>
+
+<!-- 21+ AGE VERIFICATION GATE -->
+<div id="ageGateOverlay" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
+  <div class="age-gate-card">
+    <div class="age-gate-logo"><i class="fas fa-cannabis"></i> CloudNine</div>
+    <div id="ageGateStep1">
+      <div class="age-gate-icon"><i class="fas fa-shield-halved"></i></div>
+      <h2 class="age-gate-title" id="ageGateTitle">Are you 21 or older?</h2>
+      <p class="age-gate-text" id="ageGateMsg">This website contains age-restricted content and products. By entering, you confirm you meet the legal age requirement in your jurisdiction to view and purchase cannabis products.</p>
+      <div class="age-gate-btns">
+        <button type="button" class="age-gate-btn age-gate-yes" onclick="ageGateConfirm(true)" id="ageGateYesBtn">Yes, I'm 21+</button>
+        <button type="button" class="age-gate-btn age-gate-no" onclick="ageGateConfirm(false)" id="ageGateNoBtn">No, I'm under 21</button>
+      </div>
+      <p class="age-gate-legal" id="ageGateLegal">By clicking "Yes", you agree to our Terms of Use and confirm you are of legal age to view cannabis-related content. This site uses cookies to remember your verification.</p>
+    </div>
+    <div id="ageGateStep2" class="age-gate-blocked">
+      <div class="age-gate-icon" style="background:linear-gradient(135deg,var(--muted),var(--accent3))"><i class="fas fa-ban"></i></div>
+      <h2 class="age-gate-title">Access Restricted</h2>
+      <p id="ageGateBlockedMsg">Sorry, you must be 21 years of age or older to access this site. Please check back when you meet the legal age requirement.</p>
+    </div>
+  </div>
+</div>
 
 <div class="orb orb1" aria-hidden="true"></div>
 <div class="orb orb2" aria-hidden="true"></div>
@@ -879,7 +939,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
       <p>Premium alternative products for the discerning consumer. Quality you can trust, delivered discreetly.</p>
     </div>
     <div class="footer-col"><h4>Shop</h4><ul><li><a href="#products">Vapes</a></li><li><a href="#products">Flower</a></li><li><a href="#products">Edibles</a></li><li><a href="#products">Accessories</a></li></ul></div>
-    <div class="footer-col"><h4>Info</h4><ul><li><a href="#">Lab Results</a></li><li><a href="#">Shipping Policy</a></li><li><a href="#">FAQ</a></li><li><a href="#">Age Verification</a></li></ul></div>
+    <div class="footer-col"><h4>Info</h4><ul><li><a href="#">Lab Results</a></li><li><a href="#">Shipping Policy</a></li><li><a href="#">FAQ</a></li><li><a href="#" onclick="event.preventDefault();document.getElementById('ageGateOverlay').classList.remove('hidden');document.getElementById('ageGateStep1').style.display='';document.getElementById('ageGateStep2').classList.remove('show');document.body.classList.add('age-locked');">Age Verification</a></li></ul></div>
     <div class="footer-col"><h4>Connect</h4><ul><li><a href="#" data-social="telegram" target="_blank" rel="noopener">Telegram Channel</a></li><li><a href="#" data-social="instagram" target="_blank" rel="noopener">Instagram</a></li><li><a href="#" data-social="tiktok" target="_blank" rel="noopener">TikTok</a></li></ul></div>
   </div>
   <div class="footer-bottom container">
@@ -966,6 +1026,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
         <button class="admin-tab" data-tab="content">Site Content</button>
         <button class="admin-tab" data-tab="branding">Branding</button>
         <button class="admin-tab" data-tab="colors">Theme Colors</button>
+        <button class="admin-tab" data-tab="agegate">Age Gate</button>
         <button class="admin-tab" data-tab="music">Music</button>
         <button class="admin-tab" data-tab="account">Account</button>
       </div>
@@ -1211,6 +1272,70 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 20p
         <div class="admin-form" style="margin-top:6px">
           <button class="btn-save" id="saveColors">Apply Colors</button>
           <button class="btn-save" id="resetColors" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.35);color:var(--accent3)">Reset to Defaults</button>
+        </div>
+      </div>
+      <!-- Age Gate -->
+      <div id="tabAgeGate" style="display:none">
+        <p class="admin-section-title">Age Restriction Popup</p>
+        <div class="admin-form">
+          <div class="form-group">
+            <label class="form-label">Enable Age Gate</label>
+            <select class="form-select" id="agEnabled">
+              <option value="1">Enabled — show on visit</option>
+              <option value="0">Disabled — hide popup</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Minimum Age</label>
+            <input class="form-input" id="agMinAge" type="number" min="1" max="99" placeholder="21"/>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Title</label>
+            <input class="form-input" id="agTitle" placeholder="Are you 21 or older?"/>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Message</label>
+            <textarea class="form-textarea" id="agMsg" placeholder="This website contains age-restricted content..."></textarea>
+          </div>
+          <div class="form-group"><label class="form-label">"Yes" Button Label</label><input class="form-input" id="agYesBtn" placeholder="Yes, I'm 21+"/></div>
+          <div class="form-group"><label class="form-label">"No" Button Label</label><input class="form-input" id="agNoBtn" placeholder="No, I'm under 21"/></div>
+          <div class="form-group full">
+            <label class="form-label">Fine Print / Legal Text</label>
+            <textarea class="form-textarea" id="agLegal" placeholder='By clicking "Yes", you agree to our Terms of Use...'></textarea>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Blocked Message (shown if visitor selects "No")</label>
+            <textarea class="form-textarea" id="agBlockedMsg" placeholder="Sorry, you must be of legal age..."></textarea>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Background Blur — <span id="agBlurVal">10px</span></label>
+            <div class="admin-range-row">
+              <input type="range" id="agBlur" min="0" max="30" step="1"/>
+            </div>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Background Darkness — <span id="agDarkVal">72%</span></label>
+            <div class="admin-range-row">
+              <input type="range" id="agDark" min="0" max="100" step="1"/>
+            </div>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Glass Card Blur (behind text) — <span id="agCardBlurVal">16px</span></label>
+            <div class="admin-range-row">
+              <input type="range" id="agCardBlur" min="0" max="40" step="1"/>
+            </div>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Glass Card Opacity — <span id="agCardOpVal">55%</span></label>
+            <div class="admin-range-row">
+              <input type="range" id="agCardOp" min="10" max="100" step="1"/>
+            </div>
+          </div>
+        </div>
+        <div class="admin-form" style="margin-top:6px">
+          <button class="btn-save" id="saveAgeGate">Save Age Gate Settings</button>
+          <button class="btn-save" id="previewAgeGate" type="button" style="background:var(--surface2);color:var(--text);border:1px solid var(--border)">Preview Popup</button>
+          <button class="btn-save" id="resetAgeGate" type="button" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.35);color:var(--accent3)">Reset to Defaults</button>
         </div>
       </div>
       <!-- Background Music -->
@@ -2732,6 +2857,7 @@ document.querySelectorAll('.admin-tab').forEach(tab=>{
     document.getElementById('tabContent').style.display=which==='content'?'block':'none';
     document.getElementById('tabBranding').style.display=which==='branding'?'block':'none';
     document.getElementById('tabColors').style.display=which==='colors'?'block':'none';
+    document.getElementById('tabAgeGate').style.display=which==='agegate'?'block':'none';
     document.getElementById('tabMusic').style.display=which==='music'?'block':'none';
     document.getElementById('tabAccount').style.display=which==='account'?'block':'none';
     if(which==='manage')renderAdminProducts();
@@ -2739,6 +2865,7 @@ document.querySelectorAll('.admin-tab').forEach(tab=>{
     if(which==='content')populateContentForm();
     if(which==='branding')populateBrandingForm();
     if(which==='colors')populateColorForm();
+    if(which==='agegate')populateAgeGateForm();
     if(which==='music')populateMusicForm();
     if(which==='account')populateAccountForm();
   });
@@ -2845,6 +2972,7 @@ function editProduct(id){
   document.getElementById('tabContent').style.display='none';
   document.getElementById('tabBranding').style.display='none';
   document.getElementById('tabColors').style.display='none';
+  document.getElementById('tabAgeGate').style.display='none';
   document.getElementById('tabMusic').style.display='none';
   document.getElementById('tabAccount').style.display='none';
 }
@@ -3029,6 +3157,123 @@ window.addEventListener('resize',()=>{clearTimeout(smokeResizeTimer);smokeResize
 renderProducts();renderReviews();renderCart();observeFadeUps();
 applyBranding();applyHero();applyFeatured();applyPVideo();applyMarquee();applyColors();applyMusic();
 window.addToCart=addToCart;window.changeQty=changeQty;window.removeFromCart=removeFromCart;
+
+/* ── AGE GATE (21+) — ADMIN-CONFIGURABLE ─────────────────────────────────── */
+var AGE_GATE_DEFAULTS={
+  enabled:true, minAge:21,
+  title:"Are you 21 or older?",
+  message:"This website contains age-restricted content and products. By entering, you confirm you meet the legal age requirement in your jurisdiction to view and purchase cannabis products.",
+  yesBtn:"Yes, I'm 21+", noBtn:"No, I'm under 21",
+  legal:'By clicking "Yes", you agree to our Terms of Use and confirm you are of legal age to view cannabis-related content. This site uses cookies to remember your verification.',
+  blockedMsg:"Sorry, you must be of legal age to access this site. Please check back when you meet the legal age requirement.",
+  blur:10, dark:72, cardBlur:16, cardOpacity:55
+};
+function getAgeGateSettings(){
+  var s=getState('cn_agegate_settings',null);
+  return s ? Object.assign({},AGE_GATE_DEFAULTS,s) : Object.assign({},AGE_GATE_DEFAULTS);
+}
+function applyAgeGateSettings(){
+  var s=getAgeGateSettings();
+  document.documentElement.style.setProperty('--agegate-blur', s.blur+'px');
+  document.documentElement.style.setProperty('--agegate-dark', (s.dark/100));
+  document.documentElement.style.setProperty('--agegate-card-blur', s.cardBlur+'px');
+  document.documentElement.style.setProperty('--agegate-card-opacity', (s.cardOpacity/100));
+  var titleText=(s.title||AGE_GATE_DEFAULTS.title).replace(/\{?age\}?21\}?/,s.minAge);
+  var el;
+  if((el=document.getElementById('ageGateTitle'))) el.textContent = s.title.replace(/21/g,s.minAge);
+  if((el=document.getElementById('ageGateMsg'))) el.textContent = s.message;
+  if((el=document.getElementById('ageGateYesBtn'))) el.textContent = s.yesBtn.replace(/21/g,s.minAge);
+  if((el=document.getElementById('ageGateNoBtn'))) el.textContent = s.noBtn.replace(/21/g,s.minAge);
+  if((el=document.getElementById('ageGateLegal'))) el.textContent = s.legal;
+  if((el=document.getElementById('ageGateBlockedMsg'))) el.textContent = s.blockedMsg.replace(/21/g,s.minAge);
+  var overlay=document.getElementById('ageGateOverlay');
+  if(overlay){
+    var alreadyVerified=false;
+    try{ alreadyVerified = sessionStorage.getItem('cn_age_verified')==='1'; }catch(e){}
+    if(!s.enabled || alreadyVerified){
+      overlay.classList.add('hidden');
+      document.body.classList.remove('age-locked');
+    } else {
+      overlay.classList.remove('hidden');
+      document.body.classList.add('age-locked');
+    }
+  }
+}
+function populateAgeGateForm(){
+  var s=getAgeGateSettings();
+  document.getElementById('agEnabled').value = s.enabled ? '1':'0';
+  document.getElementById('agMinAge').value = s.minAge;
+  document.getElementById('agTitle').value = s.title;
+  document.getElementById('agMsg').value = s.message;
+  document.getElementById('agYesBtn').value = s.yesBtn;
+  document.getElementById('agNoBtn').value = s.noBtn;
+  document.getElementById('agLegal').value = s.legal;
+  document.getElementById('agBlockedMsg').value = s.blockedMsg;
+  document.getElementById('agBlur').value = s.blur;
+  document.getElementById('agBlurVal').textContent = s.blur+'px';
+  document.getElementById('agDark').value = s.dark;
+  document.getElementById('agDarkVal').textContent = s.dark+'%';
+  document.getElementById('agCardBlur').value = s.cardBlur;
+  document.getElementById('agCardBlurVal').textContent = s.cardBlur+'px';
+  document.getElementById('agCardOp').value = s.cardOpacity;
+  document.getElementById('agCardOpVal').textContent = s.cardOpacity+'%';
+}
+function saveAgeGateSettings(){
+  var s={
+    enabled: document.getElementById('agEnabled').value==='1',
+    minAge: parseInt(document.getElementById('agMinAge').value,10) || 21,
+    title: document.getElementById('agTitle').value.trim() || AGE_GATE_DEFAULTS.title,
+    message: document.getElementById('agMsg').value.trim() || AGE_GATE_DEFAULTS.message,
+    yesBtn: document.getElementById('agYesBtn').value.trim() || AGE_GATE_DEFAULTS.yesBtn,
+    noBtn: document.getElementById('agNoBtn').value.trim() || AGE_GATE_DEFAULTS.noBtn,
+    legal: document.getElementById('agLegal').value.trim() || AGE_GATE_DEFAULTS.legal,
+    blockedMsg: document.getElementById('agBlockedMsg').value.trim() || AGE_GATE_DEFAULTS.blockedMsg,
+    blur: parseInt(document.getElementById('agBlur').value,10),
+    dark: parseInt(document.getElementById('agDark').value,10),
+    cardBlur: parseInt(document.getElementById('agCardBlur').value,10),
+    cardOpacity: parseInt(document.getElementById('agCardOp').value,10)
+  };
+  setState('cn_agegate_settings', s);
+  applyAgeGateSettings();
+  showToast('✅ Age gate settings saved');
+}
+function resetAgeGateSettings(){
+  if(!confirm('Reset age gate settings to defaults?')) return;
+  setState('cn_agegate_settings', AGE_GATE_DEFAULTS);
+  populateAgeGateForm();
+  applyAgeGateSettings();
+  showToast('Age gate reset to defaults');
+}
+function previewAgeGateSettings(){
+  saveAgeGateSettings();
+  try{ sessionStorage.removeItem('cn_age_verified'); }catch(e){}
+  document.getElementById('ageGateStep1').style.display='';
+  document.getElementById('ageGateStep2').classList.remove('show');
+  var overlay=document.getElementById('ageGateOverlay');
+  overlay.classList.remove('hidden');
+  document.body.classList.add('age-locked');
+  closeAdmin();
+}
+document.getElementById('agBlur').addEventListener('input',function(){document.getElementById('agBlurVal').textContent=this.value+'px';});
+document.getElementById('agDark').addEventListener('input',function(){document.getElementById('agDarkVal').textContent=this.value+'%';});
+document.getElementById('agCardBlur').addEventListener('input',function(){document.getElementById('agCardBlurVal').textContent=this.value+'px';});
+document.getElementById('agCardOp').addEventListener('input',function(){document.getElementById('agCardOpVal').textContent=this.value+'%';});
+document.getElementById('saveAgeGate').addEventListener('click',saveAgeGateSettings);
+document.getElementById('resetAgeGate').addEventListener('click',resetAgeGateSettings);
+document.getElementById('previewAgeGate').addEventListener('click',previewAgeGateSettings);
+
+window.ageGateConfirm=function(isAdult){
+  var overlay=document.getElementById('ageGateOverlay');
+  if(isAdult){
+    try{ sessionStorage.setItem('cn_age_verified','1'); }catch(e){}
+    overlay.classList.add('hidden');
+    document.body.classList.remove('age-locked');
+  } else {
+    document.getElementById('ageGateStep1').style.display='none';
+    document.getElementById('ageGateStep2').classList.add('show');
+  }
+};
+applyAgeGateSettings();
 </script>
 </body>
 </html>
