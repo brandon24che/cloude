@@ -230,9 +230,14 @@ nav.scrolled{box-shadow:0 8px 30px rgba(0,0,0,.35);background:var(--surface);}
 }
 .hero-text-panel{
   display:flex;flex-direction:column;align-items:center;
-  background:rgba(0,0,0,.44);
-  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+  background:rgba(0,0,0,var(--hero-panel-opacity,.44));
+  backdrop-filter:blur(var(--hero-panel-blur,2px));-webkit-backdrop-filter:blur(var(--hero-panel-blur,2px));
   border-radius:28px;padding:36px 40px;
+  transition:background .25s ease,backdrop-filter .25s ease;
+}
+.hero-text-panel.panel-hidden{
+  background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  border-radius:0;box-shadow:none;
 }
 .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);padding:7px 18px;border-radius:99px;font-size:.78rem;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--accent2);margin-bottom:24px;backdrop-filter:blur(8px);}
 .hero-title{font-size:clamp(2.6rem,6vw,5rem);font-weight:800;line-height:1.06;margin-bottom:22px;}
@@ -1116,6 +1121,30 @@ body.age-locked{overflow:hidden!important;}
           </div>
           <button class="btn-save" id="saveHero">Save Hero Section</button>
         </div>
+        <p class="admin-section-title" style="margin-top:28px">Hero Text Card (Glass Panel)</p>
+        <div class="admin-form">
+          <div class="form-group">
+            <label class="form-label">Card Visibility</label>
+            <select class="form-select" id="hpEnabled">
+              <option value="1">Show — glass card behind text</option>
+              <option value="0">Hide — text floats on image</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Glass Blur — <span id="hpBlurVal">2px</span></label>
+            <div class="admin-range-row">
+              <input type="range" id="hpBlur" min="0" max="40" step="1"/>
+            </div>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Glass Opacity — <span id="hpOpVal">44%</span></label>
+            <div class="admin-range-row">
+              <input type="range" id="hpOp" min="0" max="100" step="1"/>
+            </div>
+          </div>
+          <button class="btn-save" id="saveHeroPanel" type="button">Save Glass Card Settings</button>
+          <button class="btn-save" id="resetHeroPanel" type="button" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.35);color:var(--accent3)">Reset to Defaults</button>
+        </div>
         <p class="admin-section-title" style="margin-top:28px">Drop of the Month</p>
         <div class="admin-form">
           <div class="form-group"><label class="form-label">Label</label><input class="form-input" id="fLabel" placeholder="✦ Drop of the Month"/></div>
@@ -1566,6 +1595,44 @@ function applyHero(){
     bgImgEl.style.display = '';
   }
 }
+/* ── HERO GLASS TEXT-CARD — ADMIN CONFIGURABLE ───────────────────────────── */
+var HERO_PANEL_DEFAULTS={ enabled:true, blur:2, opacity:44 };
+function getHeroPanelSettings(){
+  var s=getState('cn_hero_panel',null);
+  return s ? Object.assign({},HERO_PANEL_DEFAULTS,s) : Object.assign({},HERO_PANEL_DEFAULTS);
+}
+function applyHeroPanelSettings(){
+  var s=getHeroPanelSettings();
+  document.documentElement.style.setProperty('--hero-panel-blur', s.blur+'px');
+  document.documentElement.style.setProperty('--hero-panel-opacity', (s.opacity/100));
+  var panel=document.querySelector('.hero-text-panel');
+  if(panel) panel.classList.toggle('panel-hidden', !s.enabled);
+}
+function populateHeroPanelForm(){
+  var s=getHeroPanelSettings();
+  document.getElementById('hpEnabled').value = s.enabled ? '1':'0';
+  document.getElementById('hpBlur').value = s.blur;
+  document.getElementById('hpBlurVal').textContent = s.blur+'px';
+  document.getElementById('hpOp').value = s.opacity;
+  document.getElementById('hpOpVal').textContent = s.opacity+'%';
+}
+function saveHeroPanelSettings(){
+  var s={
+    enabled: document.getElementById('hpEnabled').value==='1',
+    blur: parseInt(document.getElementById('hpBlur').value,10),
+    opacity: parseInt(document.getElementById('hpOp').value,10)
+  };
+  setState('cn_hero_panel', s);
+  applyHeroPanelSettings();
+  showToast('✅ Hero glass card settings saved');
+}
+function resetHeroPanelSettings(){
+  if(!confirm('Reset hero glass card settings to defaults?')) return;
+  setState('cn_hero_panel', HERO_PANEL_DEFAULTS);
+  populateHeroPanelForm();
+  applyHeroPanelSettings();
+  showToast('Hero glass card reset to defaults');
+}
 function applyFeatured(){
   document.getElementById('featuredLabel').textContent = featuredData.label;
   document.getElementById('featuredTitle').textContent = featuredData.title;
@@ -1648,6 +1715,7 @@ function applyMusic(){
   }
 }
 function populateContentForm(){
+  populateHeroPanelForm();
   document.getElementById('hEyebrow').value = heroData.eyebrow;
   document.getElementById('hTitle1').value = heroData.title1;
   document.getElementById('hTitleHl').value = heroData.titleHl;
@@ -3155,7 +3223,7 @@ let smokeResizeTimer;
 window.addEventListener('resize',()=>{clearTimeout(smokeResizeTimer);smokeResizeTimer=setTimeout(initSmokeEffect,300);});
 
 renderProducts();renderReviews();renderCart();observeFadeUps();
-applyBranding();applyHero();applyFeatured();applyPVideo();applyMarquee();applyColors();applyMusic();
+applyBranding();applyHero();applyHeroPanelSettings();applyFeatured();applyPVideo();applyMarquee();applyColors();applyMusic();
 window.addToCart=addToCart;window.changeQty=changeQty;window.removeFromCart=removeFromCart;
 
 /* ── AGE GATE (21+) — ADMIN-CONFIGURABLE ─────────────────────────────────── */
@@ -3258,6 +3326,10 @@ document.getElementById('agBlur').addEventListener('input',function(){document.g
 document.getElementById('agDark').addEventListener('input',function(){document.getElementById('agDarkVal').textContent=this.value+'%';});
 document.getElementById('agCardBlur').addEventListener('input',function(){document.getElementById('agCardBlurVal').textContent=this.value+'px';});
 document.getElementById('agCardOp').addEventListener('input',function(){document.getElementById('agCardOpVal').textContent=this.value+'%';});
+document.getElementById('hpBlur').addEventListener('input',function(){document.getElementById('hpBlurVal').textContent=this.value+'px';});
+document.getElementById('hpOp').addEventListener('input',function(){document.getElementById('hpOpVal').textContent=this.value+'%';});
+document.getElementById('saveHeroPanel').addEventListener('click',saveHeroPanelSettings);
+document.getElementById('resetHeroPanel').addEventListener('click',resetHeroPanelSettings);
 document.getElementById('saveAgeGate').addEventListener('click',saveAgeGateSettings);
 document.getElementById('resetAgeGate').addEventListener('click',resetAgeGateSettings);
 document.getElementById('previewAgeGate').addEventListener('click',previewAgeGateSettings);
